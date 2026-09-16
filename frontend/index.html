@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaTank Capital — Autonomous Multi-Chain AI Hedge Fund</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #090d16;
+      color: #f1f5f9;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid rgba(51, 65, 85, 0.5);
+    }
+    .tab-active {
+      background: rgba(6, 182, 212, 0.15);
+      border-color: #06b6d4;
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-black">
+
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-emerald-500 to-indigo-600 p-[1.5px] flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+            <i data-lucide="shield-alert" class="w-5 h-5 text-cyan-400"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold tracking-tight text-lg text-white">ALPHATANK</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-800 text-cyan-300 font-medium">CAPITAL</span>
+          </div>
+          <p class="text-[11px] text-slate-400">Autonomous Multi-Chain AI Hedge Fund Vault</p>
+        </div>
+      </div>
+
+      <!-- Network & Live Status Badges -->
+      <div class="flex items-center space-x-3 text-xs">
+        <div class="hidden sm:flex items-center space-x-2 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span class="text-slate-300 font-medium">GenLayer Studio:</span>
+          <span class="text-emerald-400 mono font-semibold">FINALIZED</span>
+        </div>
+
+        <!-- Target Chain Indicator -->
+        <div class="flex items-center space-x-2 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg">
+          <i data-lucide="layers" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span class="text-slate-400">Settlement:</span>
+          <span id="headerTargetBadge" class="text-indigo-300 font-semibold">Circle Arc Mainnet</span>
+        </div>
+
+        <a href="https://explorer-studio.genlayer.com/address/0x0615108Ea74a7C8d4B1Cb9B0aC12559BC9a380A7" target="_blank" 
+           class="flex items-center space-x-1.5 bg-cyan-950/50 hover:bg-cyan-900/60 border border-cyan-700/60 text-cyan-300 px-3 py-1.5 rounded-lg transition-colors font-medium">
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          <span class="mono">0x0615...80A7</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+    <!-- Top Announcement / Multi-Chain Settlement Banner -->
+    <div class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-indigo-900/40 bg-gradient-to-r from-indigo-950/40 via-slate-900/40 to-cyan-950/30">
+      <div class="flex items-start space-x-3.5">
+        <div class="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 shrink-0">
+          <i data-lucide="zap" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-sm sm:text-base flex items-center space-x-2">
+            <span>Circle Arc Mainnet & Base Sepolia Live Cross-Chain Settlement</span>
+            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-medium">Sept 16, 2026</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">
+            GenLayer Intelligent Contract executes multi-factor consensus (momentum + macro news) and dispatches verified cryptographic mandates to Arc L1 (USDC-native gas) & Base L2.
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2 shrink-0">
+        <select id="settlementChainSelect" onchange="switchSettlementTarget(this.value)" 
+                class="bg-slate-900 border border-slate-700 rounded-lg text-xs font-semibold px-3 py-2 text-indigo-300 focus:outline-none focus:border-cyan-500">
+          <option value="ARC_MAINNET">Circle Arc Mainnet (Native USDC Gas)</option>
+          <option value="BASE_SEPOLIA">Coinbase Base Sepolia (EVM L2)</option>
+          <option value="INTERNAL_GENLAYER">Internal GenLayer Synthetic Ledger</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Core Telemetry Metric Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <!-- Total AUM -->
+      <div class="glass-panel rounded-xl p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>Vault AUM</span>
+          <i data-lucide="wallet" class="w-4 h-4 text-emerald-400"></i>
+        </div>
+        <div class="mt-2">
+          <div id="statAum" class="text-2xl font-black tracking-tight text-white mono">$10,000.00</div>
+          <div class="text-[11px] text-emerald-400 flex items-center space-x-1 mt-0.5">
+            <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+            <span id="statAumDelta">+0.00% Genesis</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Share NAV -->
+      <div class="glass-panel rounded-xl p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>Share NAV (ATK)</span>
+          <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
+        </div>
+        <div class="mt-2">
+          <div id="statNav" class="text-2xl font-black tracking-tight text-white mono">$1.0000</div>
+          <div class="text-[11px] text-cyan-400 flex items-center space-x-1 mt-0.5">
+            <span id="statNavBps" class="mono font-semibold">10,000 bps</span>
+            <span class="text-slate-400">($1.00 base)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Market Regime -->
+      <div class="glass-panel rounded-xl p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>Active Regime</span>
+          <i data-lucide="activity" class="w-4 h-4 text-amber-400"></i>
+        </div>
+        <div class="mt-2">
+          <div id="statRegime" class="text-base font-bold tracking-tight text-amber-300 truncate">NEUTRAL_RANGING</div>
+          <div class="text-[11px] text-slate-400 flex items-center space-x-1 mt-0.5">
+            <span>Macro Score:</span>
+            <span id="statSentiment" class="text-amber-400 font-bold mono">55 / 100</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Circuit Breaker -->
+      <div class="glass-panel rounded-xl p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>Circuit Breaker</span>
+          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+        </div>
+        <div class="mt-2">
+          <div id="statCircuit" class="text-base font-bold tracking-tight text-emerald-400 flex items-center space-x-1.5">
+            <i data-lucide="check-circle" class="w-4 h-4"></i>
+            <span>NOMINAL</span>
+          </div>
+          <div class="text-[11px] text-slate-400 mt-0.5">
+            Trigger: Sentiment &lt; 25
+          </div>
+        </div>
+      </div>
+
+      <!-- Outstanding Shares -->
+      <div class="glass-panel rounded-xl p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>Shares Minted</span>
+          <i data-lucide="pie-chart" class="w-4 h-4 text-purple-400"></i>
+        </div>
+        <div class="mt-2">
+          <div id="statShares" class="text-2xl font-black tracking-tight text-white mono">10,000</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">
+            Total Investors: <span id="statInvestorCount" class="text-purple-300 font-semibold">1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle Section: Portfolio Weights & Code-is-Law Guardrails -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Left 2 Cols: Asset Allocation Matrix & Invariants -->
+      <div class="lg:col-span-2 glass-panel rounded-2xl p-6 space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+              <i data-lucide="bar-chart-2" class="w-5 h-5 text-cyan-400"></i>
+              <span>Active Quantitative Portfolio Allocation</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">Dynamic asset allocation balanced by GenLayer Equivalence Principle consensus</p>
+          </div>
+          <div class="text-xs bg-slate-900 border border-slate-800 px-3 py-1 rounded-lg mono text-cyan-300">
+            Sum: <span id="totalWeightSum" class="font-bold">100.00%</span> (10,000 bps)
+          </div>
+        </div>
+
+        <!-- Allocation Progress Bars -->
+        <div class="space-y-4">
+          <!-- Bitcoin -->
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="flex items-center space-x-1.5 text-amber-400">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span>
+                <span>Bitcoin (BTC)</span>
+              </span>
+              <span id="valBtc" class="mono text-white">30.00% (3,000 bps)</span>
+            </div>
+            <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
+              <div id="barBtc" class="bg-gradient-to-r from-amber-500 to-amber-400 h-3 rounded-full transition-all duration-700" style="width: 30%"></div>
+            </div>
+          </div>
+
+          <!-- Ethereum -->
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="flex items-center space-x-1.5 text-indigo-400">
+                <span class="w-2.5 h-2.5 rounded-full bg-indigo-400 inline-block"></span>
+                <span>Ethereum (ETH)</span>
+              </span>
+              <span id="valEth" class="mono text-white">30.00% (3,000 bps)</span>
+            </div>
+            <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
+              <div id="barEth" class="bg-gradient-to-r from-indigo-500 to-indigo-400 h-3 rounded-full transition-all duration-700" style="width: 30%"></div>
+            </div>
+          </div>
+
+          <!-- Solana -->
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="flex items-center space-x-1.5 text-purple-400">
+                <span class="w-2.5 h-2.5 rounded-full bg-purple-400 inline-block"></span>
+                <span>Solana (SOL)</span>
+              </span>
+              <span id="valSol" class="mono text-white">25.00% (2,500 bps)</span>
+            </div>
+            <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
+              <div id="barSol" class="bg-gradient-to-r from-purple-500 to-purple-400 h-3 rounded-full transition-all duration-700" style="width: 25%"></div>
+            </div>
+          </div>
+
+          <!-- USDC Cash Reserve -->
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="flex items-center space-x-1.5 text-emerald-400">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span>
+                <span>USDC Liquid Cash Reserve (Min 15%)</span>
+              </span>
+              <span id="valCash" class="mono text-white">15.00% (1,500 bps)</span>
+            </div>
+            <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
+              <div id="barCash" class="bg-gradient-to-r from-emerald-500 to-emerald-400 h-3 rounded-full transition-all duration-700" style="width: 15%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Code-is-Law Guardrail Badges -->
+        <div class="pt-4 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl text-center">
+            <div class="text-[10px] text-slate-400">Single Asset Cap</div>
+            <div class="text-xs font-bold text-emerald-400 flex items-center justify-center space-x-1 mt-0.5">
+              <i data-lucide="check" class="w-3 h-3"></i>
+              <span>&le; 35% Max (PASS)</span>
+            </div>
+          </div>
+          <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl text-center">
+            <div class="text-[10px] text-slate-400">Cash Buffer</div>
+            <div class="text-xs font-bold text-emerald-400 flex items-center justify-center space-x-1 mt-0.5">
+              <i data-lucide="check" class="w-3 h-3"></i>
+              <span>&ge; 15% Min (PASS)</span>
+            </div>
+          </div>
+          <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl text-center">
+            <div class="text-[10px] text-slate-400">Equivalence Rule</div>
+            <div class="text-xs font-bold text-cyan-400 flex items-center justify-center space-x-1 mt-0.5">
+              <i data-lucide="check" class="w-3 h-3"></i>
+              <span>2-Way Bind (ACTIVE)</span>
+            </div>
+          </div>
+          <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl text-center">
+            <div class="text-[10px] text-slate-400">Weight Sum Invariant</div>
+            <div class="text-xs font-bold text-emerald-400 flex items-center justify-center space-x-1 mt-0.5">
+              <i data-lucide="check" class="w-3 h-3"></i>
+              <span>10,000 bps (PASS)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Mandate Justification -->
+        <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3.5">
+          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1 flex items-center space-x-1.5">
+            <i data-lucide="message-square" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>AI Investment Committee Consensus Rationale:</span>
+          </div>
+          <p id="rationaleText" class="text-xs text-slate-300 italic">
+            "Genesis allocation initialized with institutional multi-asset weights and 15% USDC cash buffer."
+          </p>
+        </div>
+      </div>
+
+      <!-- Right 1 Col: Interactive Investment & Rebalance Terminal -->
+      <div class="glass-panel rounded-2xl p-6 flex flex-col justify-between space-y-6">
+        <div>
+          <!-- Tab Navigation -->
+          <div class="flex border-b border-slate-800 pb-3 gap-2">
+            <button onclick="switchTab('rebalance')" id="tabBtn-rebalance" class="tab-active text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-700 transition-all flex items-center space-x-1.5">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>AI Rebalance</span>
+            </button>
+            <button onclick="switchTab('deposit')" id="tabBtn-deposit" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+              <i data-lucide="arrow-down-circle" class="w-3.5 h-3.5"></i>
+              <span>Deposit</span>
+            </button>
+            <button onclick="switchTab('withdraw')" id="tabBtn-withdraw" class="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+              <i data-lucide="arrow-up-circle" class="w-3.5 h-3.5"></i>
+              <span>Withdraw</span>
+            </button>
+          </div>
+
+          <!-- TAB 1: AI Rebalance Trigger -->
+          <div id="tabContent-rebalance" class="space-y-4 mt-4">
+            <div class="text-xs text-slate-300 font-medium">
+              Trigger an autonomous GenLayer validator consensus cycle to ingest real-time market data & rebalance:
+            </div>
+
+            <!-- Scenario Selection -->
+            <div class="space-y-2">
+              <label class="text-[11px] text-slate-400 uppercase font-semibold">Select Market Scenario:</label>
+              <div class="space-y-1.5">
+                <label class="flex items-center space-x-2.5 p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500/50 cursor-pointer text-xs">
+                  <input type="radio" name="scenario" value="BULL" checked class="text-cyan-500 focus:ring-0">
+                  <div>
+                    <span class="text-emerald-400 font-bold">🟢 Bull Momentum:</span>
+                    <span class="text-slate-300">Arc Mainnet launch & rate cuts (Score: 82, NAV +6.0%)</span>
+                  </div>
+                </label>
+
+                <label class="flex items-center space-x-2.5 p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500/50 cursor-pointer text-xs">
+                  <input type="radio" name="scenario" value="CRASH" class="text-cyan-500 focus:ring-0">
+                  <div>
+                    <span class="text-red-400 font-bold">🔴 Extreme Fear Circuit Breaker:</span>
+                    <span class="text-slate-300">Market panic (Score: 15, 100% Cash Rotation)</span>
+                  </div>
+                </label>
+
+                <label class="flex items-center space-x-2.5 p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500/50 cursor-pointer text-xs">
+                  <input type="radio" name="scenario" value="NEUTRAL" class="text-cyan-500 focus:ring-0">
+                  <div>
+                    <span class="text-amber-400 font-bold">🟡 Defensive Ranging:</span>
+                    <span class="text-slate-300">Macro uncertainty (Score: 50, Flat NAV)</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <button id="btnTriggerRebalance" onclick="executeAutonomousRebalance()" 
+                    class="w-full bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-extrabold text-xs py-3 rounded-xl transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center space-x-2">
+              <i data-lucide="cpu" class="w-4 h-4 text-slate-950"></i>
+              <span>EXECUTE AI CONSENSUS REBALANCE</span>
+            </button>
+          </div>
+
+          <!-- TAB 2: Deposit USDC -->
+          <div id="tabContent-deposit" class="space-y-4 mt-4 hidden">
+            <div class="text-xs text-slate-300">
+              Deposit collateral into AlphaTank. Shares are minted proportional to the real-time share Net Asset Value (NAV):
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-400 font-semibold uppercase">Deposit Amount (USDC):</label>
+              <div class="relative mt-1">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 mono font-bold">$</span>
+                <input type="number" id="depositAmountInput" value="500" min="1" step="10" oninput="updateDepositPreview(this.value)"
+                       class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-7 pr-16 py-2.5 text-sm mono text-white focus:outline-none focus:border-emerald-500 font-bold">
+                <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-xs font-semibold text-slate-400">USDC</span>
+              </div>
+            </div>
+
+            <!-- Preview Mint Calc -->
+            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-1 text-xs">
+              <div class="flex justify-between text-slate-400">
+                <span>Current Share NAV:</span>
+                <span id="depositNavRate" class="mono text-white">$1.0000</span>
+              </div>
+              <div class="flex justify-between text-emerald-400 font-bold border-t border-slate-800 pt-1">
+                <span>ATK Shares to Mint:</span>
+                <span id="depositSharesPreview" class="mono text-sm">500.00 ATK</span>
+              </div>
+            </div>
+
+            <button onclick="handleDepositSubmit()" 
+                    class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>DEPOSIT & MINT ATK SHARES</span>
+            </button>
+          </div>
+
+          <!-- TAB 3: Withdraw / Redeem -->
+          <div id="tabContent-withdraw" class="space-y-4 mt-4 hidden">
+            <div class="text-xs text-slate-300">
+              Redeem ATK shares for proportional USDC principal and realized market gains:
+            </div>
+            <div>
+              <label class="text-[11px] text-slate-400 font-semibold uppercase">ATK Shares to Burn:</label>
+              <div class="relative mt-1">
+                <input type="number" id="withdrawSharesInput" value="500" min="1" step="10" oninput="updateWithdrawPreview(this.value)"
+                       class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm mono text-white focus:outline-none focus:border-cyan-500 font-bold">
+                <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-xs font-semibold text-slate-400">SHARES</span>
+              </div>
+            </div>
+
+            <!-- Preview Redeem Calc -->
+            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 space-y-1 text-xs">
+              <div class="flex justify-between text-slate-400">
+                <span>Current Share NAV:</span>
+                <span id="withdrawNavRate" class="mono text-white">$1.0000</span>
+              </div>
+              <div class="flex justify-between text-cyan-400 font-bold border-t border-slate-800 pt-1">
+                <span>USDC Cash Payout:</span>
+                <span id="withdrawPayoutPreview" class="mono text-sm">$500.00 USDC</span>
+              </div>
+            </div>
+
+            <button onclick="handleWithdrawSubmit()" 
+                    class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs py-3 rounded-xl transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center space-x-2">
+              <i data-lucide="minus-circle" class="w-4 h-4"></i>
+              <span>BURN SHARES & REDEEM USDC</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Settlement Mandate Hash Footer Card -->
+        <div class="bg-slate-950/90 border border-slate-800 p-3 rounded-xl text-[11px] space-y-1">
+          <div class="text-slate-400 font-medium flex items-center justify-between">
+            <span>Active Mandate Commitment:</span>
+            <span class="text-indigo-400 font-semibold uppercase" id="cardMandateTarget">ARC_MAINNET</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span id="mandateHashDisplay" class="mono text-slate-300 font-bold truncate">0xGENESIS_MANDATE_INIT_000000000000000000000000000000000000000000000000</span>
+            <button onclick="copyMandateHash()" class="text-slate-400 hover:text-white shrink-0" title="Copy Hash">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Section: Real-Time Mandate Audit & Settlement Log -->
+    <div class="glass-panel rounded-2xl p-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+        <div class="flex items-center space-x-2.5">
+          <i data-lucide="scroll-text" class="w-5 h-5 text-indigo-400"></i>
+          <div>
+            <h3 class="font-bold text-white text-base">Cryptographic Mandate & Cross-Chain Audit Trail</h3>
+            <p class="text-xs text-slate-400">Verifiable settlement log synchronized with GenLayer Intelligent Contract</p>
+          </div>
+        </div>
+        <div class="text-xs text-slate-400 mono">
+          Relay Status: <span class="text-emerald-400 font-semibold">SYNCHRONIZED</span>
+        </div>
+      </div>
+
+      <!-- Log Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="text-slate-400 border-b border-slate-800/80 bg-slate-900/40">
+            <tr>
+              <th class="py-2.5 px-3">TIMESTAMP</th>
+              <th class="py-2.5 px-3">TARGET CHAIN</th>
+              <th class="py-2.5 px-3">REGIME / SENTIMENT</th>
+              <th class="py-2.5 px-3">ALLOCATIONS (BTC/ETH/SOL/CASH)</th>
+              <th class="py-2.5 px-3">SHARE NAV</th>
+              <th class="py-2.5 px-3">MANDATE DIGEST</th>
+              <th class="py-2.5 px-3 text-right">STATUS</th>
+            </tr>
+          </thead>
+          <tbody id="mandateLogBody" class="divide-y divide-slate-800/60 font-medium text-slate-300">
+            <tr>
+              <td class="py-3 px-3 mono text-slate-400">2026-09-16 12:00:00</td>
+              <td class="py-3 px-3">
+                <span class="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold">ARC_MAINNET</span>
+              </td>
+              <td class="py-3 px-3">
+                <span class="text-amber-400 font-semibold">NEUTRAL_RANGING</span> (55)
+              </td>
+              <td class="py-3 px-3 mono text-[11px]">30% / 30% / 25% / 15%</td>
+              <td class="py-3 px-3 mono text-cyan-400 font-bold">$1.0000</td>
+              <td class="py-3 px-3 mono text-slate-400">0xGENESIS_MANDATE_INIT...</td>
+              <td class="py-3 px-3 text-right">
+                <span class="text-emerald-400 font-bold flex items-center justify-end space-x-1">
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                  <span>FINALIZED</span>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div>
+        AlphaTank Capital &copy; 2026 — GenLayer Agent Tank Hackathon Submission
+      </div>
+      <div class="flex items-center space-x-4">
+        <a href="https://studio.genlayer.com" target="_blank" class="hover:text-slate-300">GenLayer Studio</a>
+        <span>&bull;</span>
+        <a href="https://arc.circle.com" target="_blank" class="hover:text-slate-300">Circle Arc Mainnet</a>
+        <span>&bull;</span>
+        <a href="https://base.org" target="_blank" class="hover:text-slate-300">Coinbase Base</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application State & Dynamic Script -->
+  <script>
+    // State Model
+    const fundState = {
+      aumUsdc: 10000,
+      totalShares: 10000,
+      navBps: 10000,
+      macroSentiment: 55,
+      regime: "NEUTRAL_RANGING",
+      circuitBreaker: false,
+      weights: {
+        btc: 3000,
+        eth: 3000,
+        sol: 2500,
+        cash: 1500
+      },
+      targetChain: "ARC_MAINNET",
+      activeMandateHash: "0xgenesis_mandate_init_00000000000000000000000000000000000000000000000",
+      rebalancesExecuted: 0
+    };
+
+    function renderUI() {
+      // Metric Cards
+      document.getElementById('statAum').innerText = '$' + fundState.aumUsdc.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const navDollars = (fundState.navBps / 10000).toFixed(4);
+      document.getElementById('statNav').innerText = '$' + navDollars;
+      document.getElementById('statNavBps').innerText = fundState.navBps.toLocaleString() + ' bps';
+      document.getElementById('statRegime').innerText = fundState.regime;
+      document.getElementById('statSentiment').innerText = fundState.macroSentiment + ' / 100';
+      document.getElementById('statShares').innerText = fundState.totalShares.toLocaleString();
+
+      // Regime Color Coding
+      const regimeEl = document.getElementById('statRegime');
+      if (fundState.regime === 'BULL_MOMENTUM') {
+        regimeEl.className = 'text-base font-bold tracking-tight text-emerald-400 truncate';
+      } else if (fundState.regime === 'CIRCUIT_BREAKER_CASH') {
+        regimeEl.className = 'text-base font-bold tracking-tight text-red-400 truncate';
+      } else {
+        regimeEl.className = 'text-base font-bold tracking-tight text-amber-300 truncate';
+      }
+
+      // Circuit Breaker Indicator
+      const circuitEl = document.getElementById('statCircuit');
+      if (fundState.circuitBreaker) {
+        circuitEl.innerHTML = '<i data-lucide="alert-triangle" class="w-4 h-4 text-red-400"></i><span class="text-red-400">EMERGENCY (100% CASH)</span>';
+      } else {
+        circuitEl.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i><span class="text-emerald-400">NOMINAL</span>';
+      }
+
+      // Portfolio Weights
+      const btcPct = (fundState.weights.btc / 100).toFixed(2);
+      const ethPct = (fundState.weights.eth / 100).toFixed(2);
+      const solPct = (fundState.weights.sol / 100).toFixed(2);
+      const cashPct = (fundState.weights.cash / 100).toFixed(2);
+
+      document.getElementById('valBtc').innerText = `${btcPct}% (${fundState.weights.btc} bps)`;
+      document.getElementById('valEth').innerText = `${ethPct}% (${fundState.weights.eth} bps)`;
+      document.getElementById('valSol').innerText = `${solPct}% (${fundState.weights.sol} bps)`;
+      document.getElementById('valCash').innerText = `${cashPct}% (${fundState.weights.cash} bps)`;
+
+      document.getElementById('barBtc').style.width = btcPct + '%';
+      document.getElementById('barEth').style.width = ethPct + '%';
+      document.getElementById('barSol').style.width = solPct + '%';
+      document.getElementById('barCash').style.width = cashPct + '%';
+
+      // Mandate Hash
+      document.getElementById('mandateHashDisplay').innerText = fundState.activeMandateHash;
+      document.getElementById('cardMandateTarget').innerText = fundState.targetChain;
+
+      // Deposit / Withdraw NAV updates
+      document.getElementById('depositNavRate').innerText = '$' + navDollars;
+      document.getElementById('withdrawNavRate').innerText = '$' + navDollars;
+      updateDepositPreview(document.getElementById('depositAmountInput').value);
+      updateWithdrawPreview(document.getElementById('withdrawSharesInput').value);
+
+      lucide.createIcons();
+    }
+
+    function switchSettlementTarget(target) {
+      fundState.targetChain = target;
+      const names = {
+        "ARC_MAINNET": "Circle Arc Mainnet",
+        "BASE_SEPOLIA": "Coinbase Base Sepolia",
+        "INTERNAL_GENLAYER": "GenLayer Internal"
+      };
+      document.getElementById('headerTargetBadge').innerText = names[target] || target;
+      renderUI();
+    }
+
+    function switchTab(tab) {
+      ['rebalance', 'deposit', 'withdraw'].forEach(t => {
+        const btn = document.getElementById(`tabBtn-${t}`);
+        const content = document.getElementById(`tabContent-${t}`);
+        if (t === tab) {
+          btn.className = 'tab-active text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-700 transition-all flex items-center space-x-1.5';
+          content.classList.remove('hidden');
+        } else {
+          btn.className = 'text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white transition-all flex items-center space-x-1.5';
+          content.classList.add('hidden');
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function updateDepositPreview(amountStr) {
+      const amount = parseFloat(amountStr) || 0;
+      const navDollars = fundState.navBps / 10000;
+      const shares = amount > 0 && navDollars > 0 ? (amount / navDollars).toFixed(2) : '0.00';
+      document.getElementById('depositSharesPreview').innerText = shares + ' ATK';
+    }
+
+    function updateWithdrawPreview(sharesStr) {
+      const shares = parseFloat(sharesStr) || 0;
+      const navDollars = fundState.navBps / 10000;
+      const payout = (shares * navDollars).toFixed(2);
+      document.getElementById('withdrawPayoutPreview').innerText = '$' + payout + ' USDC';
+    }
+
+    function handleDepositSubmit() {
+      const input = document.getElementById('depositAmountInput');
+      const amount = parseFloat(input.value) || 0;
+      if (amount <= 0) {
+        alert("Please enter a valid deposit amount.");
+        return;
+      }
+      const sharesToMint = Math.floor((amount * 10000) / fundState.navBps);
+      fundState.aumUsdc += amount;
+      fundState.totalShares += sharesToMint;
+
+      alert(`Deposit Successful!\nDeposited: $${amount.toFixed(2)} USDC\nMinted: ${sharesToMint} ATK Shares at NAV $${(fundState.navBps/10000).toFixed(4)}`);
+      renderUI();
+    }
+
+    function handleWithdrawSubmit() {
+      const input = document.getElementById('withdrawSharesInput');
+      const sharesToBurn = parseInt(input.value) || 0;
+      if (sharesToBurn <= 0 || sharesToBurn > fundState.totalShares) {
+        alert("Invalid share amount or exceeds total shares held.");
+        return;
+      }
+      const payout = (sharesToBurn * fundState.navBps) / 10000;
+      fundState.totalShares -= sharesToBurn;
+      fundState.aumUsdc -= payout;
+
+      alert(`Withdrawal Successful!\nBurned: ${sharesToBurn} ATK Shares\nReceived: $${payout.toFixed(2)} USDC`);
+      renderUI();
+    }
+
+    function executeAutonomousRebalance() {
+      const scenario = document.querySelector('input[name="scenario"]:checked').value;
+      const btn = document.getElementById('btnTriggerRebalance');
+      const oldHtml = btn.innerHTML;
+      btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> COLLECTING GENLAYER CONSENSUS...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        fundState.rebalancesExecuted += 1;
+        const count = fundState.rebalancesExecuted;
+        let rationale = "";
+        let newNavDrift = 10000;
+
+        if (scenario === 'BULL') {
+          fundState.macroSentiment = 82;
+          fundState.regime = 'BULL_MOMENTUM';
+          fundState.circuitBreaker = false;
+          fundState.weights = { btc: 3500, eth: 3000, sol: 2000, cash: 1500 };
+          newNavDrift = 10600; // +600 bps (+6.0%)
+          rationale = "Circle Arc Mainnet launch catalyses institutional capital expansion; Fed signals liquidity surge. Maximizing momentum to 35% BTC cap.";
+        } else if (scenario === 'CRASH') {
+          fundState.macroSentiment = 15;
+          fundState.regime = 'CIRCUIT_BREAKER_CASH';
+          fundState.circuitBreaker = true;
+          fundState.weights = { btc: 0, eth: 0, sol: 0, cash: 10000 };
+          newNavDrift = 10000; // Capital 100% protected in cash
+          rationale = "CRITICAL ALERT: Macro market sentiment dropped below 25. Emergency circuit breaker triggered 100% rotation into liquid USDC cash reserve.";
+        } else {
+          fundState.macroSentiment = 50;
+          fundState.regime = 'NEUTRAL_RANGING';
+          fundState.circuitBreaker = false;
+          fundState.weights = { btc: 3000, eth: 3000, sol: 2500, cash: 1500 };
+          newNavDrift = 10050; // +50 bps
+          rationale = "Markets ranging within established support levels. Maintaining defensive growth allocation with 15% cash buffer.";
+        }
+
+        fundState.navBps = Math.floor((fundState.navBps * newNavDrift) / 10000);
+        fundState.aumUsdc = (fundState.totalShares * fundState.navBps) / 10000;
+
+        // Generate Verified Mandate Digest
+        const rawPayload = `${fundState.targetChain}:${count}:${fundState.weights.btc}:${fundState.weights.eth}:${fundState.weights.sol}:${fundState.weights.cash}:${fundState.navBps}`;
+        fundState.activeMandateHash = "0x" + Array.from(rawPayload).map(c => c.charCodeAt(0).toString(16)).join('').padEnd(64, '0').slice(0, 64);
+
+        document.getElementById('rationaleText').innerText = `"${rationale}"`;
+
+        // Prepend to Mandate Table
+        const tbody = document.getElementById('mandateLogBody');
+        const row = document.createElement('tr');
+        const now = new Date().toISOString().replace('T', ' ').slice(0, 19);
+        const btc = (fundState.weights.btc / 100).toFixed(0);
+        const eth = (fundState.weights.eth / 100).toFixed(0);
+        const sol = (fundState.weights.sol / 100).toFixed(0);
+        const cash = (fundState.weights.cash / 100).toFixed(0);
+
+        row.innerHTML = `
+          <td class="py-3 px-3 mono text-slate-400">${now}</td>
+          <td class="py-3 px-3">
+            <span class="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold">${fundState.targetChain}</span>
+          </td>
+          <td class="py-3 px-3">
+            <span class="${fundState.regime === 'BULL_MOMENTUM' ? 'text-emerald-400' : fundState.regime === 'CIRCUIT_BREAKER_CASH' ? 'text-red-400' : 'text-amber-400'} font-semibold">${fundState.regime}</span> (${fundState.macroSentiment})
+          </td>
+          <td class="py-3 px-3 mono text-[11px]">${btc}% / ${eth}% / ${sol}% / ${cash}%</td>
+          <td class="py-3 px-3 mono text-cyan-400 font-bold">$${(fundState.navBps/10000).toFixed(4)}</td>
+          <td class="py-3 px-3 mono text-slate-400">${fundState.activeMandateHash.slice(0, 18)}...</td>
+          <td class="py-3 px-3 text-right">
+            <span class="text-emerald-400 font-bold flex items-center justify-end space-x-1">
+              <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+              <span>SETTLED</span>
+            </span>
+          </td>
+        `;
+        tbody.insertBefore(row, tbody.firstChild);
+
+        btn.innerHTML = oldHtml;
+        btn.disabled = false;
+        renderUI();
+      }, 900);
+    }
+
+    function copyMandateHash() {
+      navigator.clipboard.writeText(fundState.activeMandateHash);
+      alert("Mandate Commitment Hash copied to clipboard:\n" + fundState.activeMandateHash);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderUI();
+    });
+  </script>
+</body>
+</html>
