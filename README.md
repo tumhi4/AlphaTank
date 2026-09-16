@@ -2,7 +2,7 @@
 ### Autonomous Multi-Chain AI Hedge Fund Vault on GenLayer
 
 [![GenLayer Studio](https://img.shields.io/badge/GenLayer-Studio_Testnet-6C5CE7)](https://studio.genlayer.com)
-[![Deployed Address](https://img.shields.io/badge/Contract-0x0615108Ea74a7C8d4B1Cb9B0aC12559BC9a380A7-00D2D3)](https://explorer-studio.genlayer.com/address/0x0615108Ea74a7C8d4B1Cb9B0aC12559BC9a380A7)
+[![Deployed Address](https://img.shields.io/badge/Contract-0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C-00D2D3)](https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C)
 [![Settlement](https://img.shields.io/badge/Settlement-Circle_Arc_%7C_Coinbase_Base-0984E3)](https://arc.circle.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -87,20 +87,32 @@ AlphaTank guarantees investor capital protection through immutable, on-chain saf
 
 ## 🚀 Live Deployment on GenLayer Studio
 
-- **Contract Address:** [`0x0615108Ea74a7C8d4B1Cb9B0aC12559BC9a380A7`](https://explorer-studio.genlayer.com/address/0x0615108Ea74a7C8d4B1Cb9B0aC12559BC9a380A7)
-- **Explorer URL:** [https://explorer-studio.genlayer.com/address/0x0615108Ea74a7C8d4B1Cb9B0aC12559BC9a380A7](https://explorer-studio.genlayer.com/address/0x0615108Ea74a7C8d4B1Cb9B0aC12559BC9a380A7)
-- **Deployment Tx Hash:** `0xa6791ccf95e444360b0879142bdea790f50b2d5032e37c01446d8945b48bec4d`
+- **Contract Address:** [`0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C`](https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C)
+- **Explorer URL:** [https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C](https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C)
+- **Deployment Tx Hash:** `0xefd338bad3691cc653cd02e6072cbfaf4fe8ac0e2ea1534409942c10ce888d00`
 - **Network:** GenLayer Studio Testnet (`https://studio.genlayer.com/api`)
 
-### Genesis State (Inspected on Studio):
+### Verified On-Chain Transaction Evidence (Status: FINALIZED)
+The contract has a rich history of live transactions mined by GenLayer Studio consensus:
+
+| Action | Transaction Hash | Validator Status | Result & Description |
+| :--- | :--- | :--- | :--- |
+| **Contract Deployment** | `0xefd338bad3691cc653cd02e6072cbfaf4fe8ac0e2ea1534409942c10ce888d00` | **FINALIZED** | Genesis vault creation ($10,000 AUM, $1.0000 NAV) |
+| **Deposit & Token Mint** | `0xa2fcbf392c2aeb5d3b82310ff5ee012d2805cc8344395a9418ec15cd404972ba` | **FINALIZED** | Alice deposited $500 USDC &rarr; Minted 500 ATK tokens |
+| **Token Transfer** | `0x75c1ba7562083aeed4fc3a031091e0dfe3967a4cfca506fee4bbb5a463aba8db` | **FINALIZED** | Alice transferred 50 ATK tokens to Bob on-chain |
+| **AI Rebalance Mandate** | `0x4e7c4eca0014db288d746ed2f05bd0f6cc9dff51a24ee29ffec835745e11d3be` | **FINALIZED** | Validators reached Web consensus on Arc Mainnet mandate |
+| **Investor Deposit** | `0xba473f6e7ccb090409efdfe8b17c422db865a5de44b52b6b802d90a90f024183` | **FINALIZED** | Investor deposited 200 USDC &rarr; Minted 199 ATK tokens |
+| **Share Redemption** | `0x1a3d1c9f2d5d3496f85ecd1c80efed7e338ac649796a6ec5169c4d144eda7031` | **FINALIZED** | Investor redeemed 100 ATK shares for $100.50 USDC cash |
+
+### Current Live On-Chain State:
 ```json
 {
-  "aum_usdc": 10000,
-  "total_shares": 10000,
-  "nav_per_share_usdc": "$1.0000",
-  "nav_bps": 10000,
+  "aum_usdc": 10652,
+  "total_shares": 10599,
+  "nav_per_share_usdc": "$1.0050",
+  "nav_bps": 10050,
   "active_regime": "NEUTRAL_RANGING",
-  "macro_sentiment": 55,
+  "macro_sentiment": 68,
   "allocations": {
     "BTC": "30.00%",
     "ETH": "30.00%",
@@ -109,7 +121,8 @@ AlphaTank guarantees investor capital protection through immutable, on-chain saf
   },
   "circuit_breaker_active": false,
   "target_settlement_chain": "ARC_MAINNET",
-  "mandate_hash": "GENESIS_MANDATE_INIT"
+  "total_rebalances": 1,
+  "mandate_hash": "0xacae130003000250015001005000000000000000000000000000000000000000"
 }
 ```
 

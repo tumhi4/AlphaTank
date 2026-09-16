@@ -1,9 +1,9 @@
 {
   "network": "GenLayer Studio Testnet",
   "rpc": "https://studio.genlayer.com/api",
-  "contractAddress": "0x0615108Ea74a7C8d4B1Cb9B0aC12559BC9a380A7",
-  "deployer": "0xF166458A0ec143e51C6D40a8308f7f10892E523f",
-  "txHash": "0xa6791ccf95e444360b0879142bdea790f50b2d5032e37c01446d8945b48bec4d",
-  "deployedAt": "2026-09-16T13:01:01.367Z",
-  "explorerUrl": "https://explorer-studio.genlayer.com/address/0x0615108Ea74a7C8d4B1Cb9B0aC12559BC9a380A7"
+  "contractAddress": "0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C",
+  "deployer": "0x144D29bcB0b9E9012161d8B6f554B74A76dbD713",
+  "txHash": "0xefd338bad3691cc653cd02e6072cbfaf4fe8ac0e2ea1534409942c10ce888d00",
+  "deployedAt": "2026-09-16T16:55:58.032Z",
+  "explorerUrl": "https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C"
 }

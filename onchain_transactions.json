@@ -1,0 +1,56 @@
+{
+  "contractAddress": "0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C",
+  "explorerUrl": "https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C",
+  "transactions": [
+    {
+      "action": "DEPLOYMENT",
+      "hash": "0xefd338bad3691cc653cd02e6072cbfaf4fe8ac0e2ea1534409942c10ce888d00",
+      "desc": "Genesis contract creation (,000 AUM, .0000 NAV)"
+    },
+    {
+      "action": "DEPOSIT",
+      "hash": "0xa2fcbf392c2aeb5d3b82310ff5ee012d2805cc8344395a9418ec15cd404972ba",
+      "desc": "Alice deposited  USDC -> Minted 500 ATK tokens"
+    },
+    {
+      "action": "TRANSFER",
+      "hash": "0x75c1ba7562083aeed4fc3a031091e0dfe3967a4cfca506fee4bbb5a463aba8db",
+      "desc": "Alice transferred 50 ATK tokens to Bob"
+    },
+    {
+      "action": "AI_REBALANCE",
+      "hash": "0x4e7c4eca0014db288d746ed2f05bd0f6cc9dff51a24ee29ffec835745e11d3be",
+      "desc": "AI Investment Committee consensus finalized rebalance (Arc Mainnet mandate)"
+    },
+    {
+      "action": "DEPOSIT",
+      "hash": "0xba473f6e7ccb090409efdfe8b17c422db865a5de44b52b6b802d90a90f024183",
+      "desc": "Investor deposited 200 USDC -> Minted 199 ATK tokens at .0050 NAV"
+    },
+    {
+      "action": "WITHDRAW",
+      "hash": "0x1a3d1c9f2d5d3496f85ecd1c80efed7e338ac649796a6ec5169c4d144eda7031",
+      "desc": "Investor redeemed 100 ATK shares for .50 USDC cash"
+    }
+  ],
+  "liveTelemetry": {
+    "active_regime": "NEUTRAL_RANGING",
+    "allocations": {
+      "BTC": "30.00%",
+      "ETH": "30.00%",
+      "SOL": "25.00%",
+      "USDC_CASH": "15.00%"
+    },
+    "aum_usdc": 10652,
+    "circuit_breaker_active": false,
+    "latest_rationale": "Crypto majors show modest negative 24h momentum, indicating near-term sideways-to-soft price action rather than a broad risk-on breakout. However, strong bullish macro catalysts from the Arc mainnet launch, Federal Reserve rate cuts, and record institutional inflows support a constructive medium-term backdrop.",
+    "macro_sentiment": 68,
+    "mandate_hash": "0xacae130003000250015001005000000000000000000000000000000000000000",
+    "nav_bps": 10050,
+    "nav_per_share_usdc": "$1.0050",
+    "target_settlement_chain": "ARC_MAINNET",
+    "total_rebalances": 1,
+    "total_shares": 10599
+  },
+  "verifiedAt": "2026-09-16T17:10:29.976Z"
+}
