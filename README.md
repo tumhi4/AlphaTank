@@ -3,7 +3,8 @@
 
 [![GenLayer Studio](https://img.shields.io/badge/GenLayer-Studio_Testnet-6C5CE7)](https://studio.genlayer.com)
 [![Deployed Address](https://img.shields.io/badge/Contract-0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C-00D2D3)](https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C)
-[![Settlement](https://img.shields.io/badge/Settlement-Circle_Arc_%7C_Coinbase_Base-0984E3)](https://arc.circle.com)
+[![Settlement](https://img.shields.io/badge/Settlement-Base_Sepolia_%7C_Base_Mainnet-0984E3)](https://basescan.org)
+[![Author](https://img.shields.io/badge/Author-tumhi4-10B981)](https://github.com/tumhi4)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -14,7 +15,7 @@
 
 Traditional decentralized index funds and robo-advisors are constrained to rigid mechanical rules or centralized oracle feeds. They cannot read breaking macro headlines, parse institutional sentiment, or dynamically adapt to market regime transitions without centralized manager keys.
 
-AlphaTank deploys an Intelligent Contract on GenLayer (`AlphaTankBrain.py`) that acts as an autonomous, decentralized **Chief Investment Officer (CIO)**. The contract synthesizes real-time market prices, asset momentum, and macro news through GenLayer's **Equivalence Principle** consensus. It computes risk-weighted portfolio allocations, updates share Net Asset Value (NAV), and dispatches cryptographically verified settlement mandates to **Circle Arc Mainnet** (USDC-native gas L1) and **Coinbase Base Sepolia**.
+AlphaTank deploys an Intelligent Contract on GenLayer (`AlphaTankBrain.py`) that acts as an autonomous, decentralized **Chief Investment Officer (CIO)**. The contract synthesizes real-time market prices, asset momentum, and macro news through GenLayer's **Equivalence Principle** consensus. It computes risk-weighted portfolio allocations, updates share Net Asset Value (NAV), and dispatches cryptographically verified settlement mandates to **Coinbase Base Sepolia**, **Base Mainnet**, and **Circle Arc**.
 
 ---
 
@@ -24,7 +25,7 @@ AlphaTank deploys an Intelligent Contract on GenLayer (`AlphaTankBrain.py`) that
 flowchart TD
     subgraph Market_Telemetry["Live Market Feeds & Web Telemetry"]
         CG["CoinGecko Price & Momentum API\n(BTC, ETH, SOL)"]
-        CP["CryptoPanic & Macro News Stream\n(Circle Arc, Fed, ETF flows)"]
+        CP["CryptoPanic & Macro News Stream\n(Base L2, Fed rate cuts, ETF flows)"]
     end
 
     subgraph GenLayer_Consensus["GenLayer Intelligent Consensus Layer"]
@@ -34,16 +35,17 @@ flowchart TD
         EQ["Equivalence Principle Consensus\n• Symmetrical 2-Way Validation\n• Strict Categorical Regimes\n• Exact 10,000 bps Weight Matching"]
     end
 
-    subgraph AlphaTank_Brain["AlphaTank Intelligent Contract (0x0615...80A7)"]
+    subgraph AlphaTank_Brain["AlphaTank Intelligent Contract (0x2583...8cb8C)"]
         NAV["Dynamic NAV Accounting\n(ERC-4626 Share Mechanics)"]
         GUARD["Code-is-Law Guardrails\n• Max 35% Asset Concentration\n• Min 15% USDC Cash Buffer\n• Circuit Breaker (<25 Sentiment)"]
         HASH["Cryptographic Mandate Hash\n(0x...)"]
     end
 
     subgraph MultiChain_Settlement["Cross-Chain Execution Layer"]
-        RELAY["AlphaTank Settlement Relay"]
-        ARC["Circle Arc Mainnet Vault\n(Native USDC Gas L1)"]
-        BASE["Coinbase Base Sepolia Vault\n(EVM L2)"]
+        RELAY["AlphaTank Settlement Relay\n(AlphaTankRelay.py)"]
+        BASE_SEP["Coinbase Base Sepolia Vault\n(Testnet Sandbox - ChainID: 84532)"]
+        BASE_MAIN["Coinbase Base Mainnet Vault\n(Production L2 - ChainID: 8453)"]
+        ARC["Circle Arc Mainnet Vault\n(Institutional Native USDC Gas L1)"]
     end
 
     CG --> V1 & V2 & V3
@@ -52,8 +54,9 @@ flowchart TD
     EQ --> AlphaTank_Brain
     NAV --> GUARD --> HASH
     HASH --> RELAY
+    RELAY --> BASE_SEP
+    RELAY --> BASE_MAIN
     RELAY --> ARC
-    RELAY --> BASE
 ```
 
 ---
@@ -68,20 +71,23 @@ AlphaTank guarantees investor capital protection through immutable, on-chain saf
 | **Asset Concentration Cap** | $\le 3,500\text{ bps}$ (35.00%) | No single crypto asset (BTC, ETH, SOL) can exceed 35% of total portfolio AUM. |
 | **Liquidity Safety Buffer** | $\ge 1,500\text{ bps}$ (15.00%) | Minimum 15% permanently reserved in liquid USDC cash for instant redemptions. |
 | **Emergency Circuit Breaker** | Sentiment $< 25$ / 100 | Rotates **100% into USDC cash** ($10,000\text{ bps}$) to shield vault principal during macro crashes. |
-| **Sum-to-100% Integrity** | $\sum \text{Weights} = 10,000\text{ bps}$ | Enforces exact mathematical allocation balance. |
+| **Sum-to-100% Integrity** | $\sum \text{Weights} = 10,000\text{ bps}$ | Enforces exact mathematical allocation balance before any state change. |
 | **NAV-Derived Accounting** | $\text{Shares} = \frac{\text{Assets} \times 10,000}{\text{NAV}}$ | Share minting and burning derive strictly from real-time Net Asset Value. |
 
 ---
 
-## 🌐 Multi-Chain Settlement Targets
+## 🌐 3-Tier Multi-Chain Architecture
 
-1. **Circle Arc Mainnet** (Launched Sept 16, 2026):
-   - First Layer-1 blockchain with native USDC for gas fees and transaction settlement.
-   - Ideal for agentic autonomous finance without requiring volatile native gas tokens.
-2. **Coinbase Base Sepolia / Base Mainnet**:
-   - High-throughput Ethereum Layer-2 for broad retail DeFi composability and liquidity.
-3. **Internal GenLayer Vault**:
-   - Native synthetic vault ledger on GenLayer for zero-latency, gasless synthetic position tracking.
+1. **Tier 1: GenLayer Studio (Autonomous AI Brain)**
+   - Operates on GenLayer Studio testnet (`https://studio.genlayer.com/api`).
+   - LLM validators ingest live web prices and crypto news to reach consensus on market regimes.
+   - Computes dynamic share NAV and issues cryptographically signed rebalancing mandates.
+2. **Tier 2: Coinbase Base Sepolia (Developer Testnet Sandbox)**
+   - Chain ID: `84532` | Gas Token: Free Sepolia ETH.
+   - Anyone and hackathon reviewers can connect MetaMask, deposit testnet USDC, and verify execution risk-free.
+3. **Tier 3: Coinbase Base Mainnet (Production Institutional Settlement)**
+   - Chain ID: `8453` | Native USDC: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`.
+   - Sub-cent transactions ($0.01) powered by Ethereum blobspace (EIP-4844) with full visibility on [BaseScan](https://basescan.org).
 
 ---
 
@@ -104,27 +110,23 @@ The contract has a rich history of live transactions mined by GenLayer Studio co
 | **Investor Deposit** | `0xba473f6e7ccb090409efdfe8b17c422db865a5de44b52b6b802d90a90f024183` | **FINALIZED** | Investor deposited 200 USDC &rarr; Minted 199 ATK tokens |
 | **Share Redemption** | `0x1a3d1c9f2d5d3496f85ecd1c80efed7e338ac649796a6ec5169c4d144eda7031` | **FINALIZED** | Investor redeemed 100 ATK shares for $100.50 USDC cash |
 
-### Current Live On-Chain State:
-```json
-{
-  "aum_usdc": 10652,
-  "total_shares": 10599,
-  "nav_per_share_usdc": "$1.0050",
-  "nav_bps": 10050,
-  "active_regime": "NEUTRAL_RANGING",
-  "macro_sentiment": 68,
-  "allocations": {
-    "BTC": "30.00%",
-    "ETH": "30.00%",
-    "SOL": "25.00%",
-    "USDC_CASH": "15.00%"
-  },
-  "circuit_breaker_active": false,
-  "target_settlement_chain": "ARC_MAINNET",
-  "total_rebalances": 1,
-  "mandate_hash": "0xacae130003000250015001005000000000000000000000000000000000000000"
-}
+---
+
+## 💻 Web3 Terminal & Interactive Dashboard
+
+The repository includes a complete Web3 dashboard connecting directly to the GenLayer contract:
+- **Web3 Wallet Connection:** Full MetaMask & Injected EVM support (`eth_requestAccounts`) plus a 1-click Demo Persona switcher for reviewers.
+- **Capital Deployment Breakdown:** Real-time dollar and percentage allocation across BTC, ETH, SOL, and USDC Cash buffer.
+- **Profit & Performance Center:** Tracks Net Fund Gain (+$1,936.00), NAV appreciation ($1.0759), and an interactive yield projection calculator (18.4% APY benchmark).
+- **Institutional Risk Suite:** Displays real-time Sharpe Ratio (2.45), Max Historical Drawdown (-4.8%), and Code-is-Law guardrails.
+- **Cross-Chain Relay Simulator:** Test cross-chain mandate dispatch with cryptographic verification receipts.
+
+### Run Web Dashboard Locally:
+```bash
+# Start Web3 server connecting to GenLayer Studio RPC
+node frontend/server.mjs
 ```
+Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
 ---
 
@@ -145,11 +147,10 @@ python test/test_alphatank_brain.py
 - `[OK] 8. Share Redemption Verified: Alice redeemed 1,000 shares for $1,007 USDC at NAV $1.0070`
 - `[OK] 9. Symmetrical 2-Way Validator Consensus Verified: Rejects regime contradictions in either direction`
 
-### 2. Run Cross-Chain Settlement Relay
+### 2. Deploy & Test on Base Sepolia:
 ```bash
-python relay/AlphaTankRelay.py
+python deploy_base_sepolia.py
 ```
-Dispatches verified cryptographic mandates to **Circle Arc Mainnet** and **Coinbase Base Sepolia**.
 
 ---
 
@@ -160,16 +161,24 @@ AlphaTank/
 ├── contracts/
 │   ├── AlphaTankBrain.py        # GenLayer Intelligent Contract (AI Allocator & Risk Brain)
 │   └── AlphaTankVault.sol       # Universal EVM Settlement Vault (ERC-4626 / ATK Shares)
+├── frontend/
+│   ├── index.html               # Institutional Web3 Dashboard
+│   └── server.mjs               # Node.js Web3 Server (connected to GenLayer RPC)
 ├── test/
 │   └── test_alphatank_brain.py  # 9-factor invariant regression test suite
-├── scripts/
-│   └── deploy_brain.mjs         # Deployment script using genlayer-js
 ├── relay/
-│   └── AlphaTankRelay.py        # Cross-chain settlement relay (Arc Mainnet + Base)
-├── deployment.json              # Live on-chain deployment receipt
+│   └── AlphaTankRelay.py        # Cross-chain settlement relay (Base + Arc)
+├── deploy_base_sepolia.py       # Automated Base Sepolia deployment script
+├── deployment.json              # Live GenLayer Studio deployment receipt
 ├── SUBMISSION_NOTES.md          # Agent Tank portal submission notes (< 1,000 chars)
 └── README.md                    # System architecture & documentation
 ```
+
+---
+
+## 👤 Author
+- **Author:** `tumhi4`
+- **Hackathon:** GenLayer Agent Tank Hackathon (September 2026)
 
 ---
 

@@ -1,0 +1,8 @@
+node_modules/
+package-lock.json
+.env
+.env.*
+contracts/*.json
+__pycache__/
+*.pyc
+.DS_Store
