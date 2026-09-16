@@ -182,6 +182,76 @@ contract AlphaTankVault is IERC20 {
         require(success, "USDC_PAYOUT_FAILED");
     }
 
+    // --- Native ETH Support for Low-Friction L2 Execution ---
+
+    /**
+     * @notice Deposit native ETH on Base Sepolia to mint ATK fund shares at current NAV.
+     * Treats 1 ETH as equivalent to $2,500 USDC collateral (6 decimals).
+     * @return sharesMinted Number of ATK shares minted.
+     */
+    function depositETH() external payable returns (uint256 sharesMinted) {
+        require(msg.value > 0, "ZERO_ETH_DEPOSIT");
+        uint256 usdcValue = (msg.value * 2500) / 1e12;
+        if (usdcValue == 0) usdcValue = 1;
+
+        sharesMinted = (usdcValue * 10000) / navPerShareBps;
+        require(sharesMinted > 0, "ZERO_SHARES_MINTED");
+
+        _totalSupply += sharesMinted;
+        _balances[msg.sender] += sharesMinted;
+        totalAumUsdc += usdcValue;
+
+        emit Deposit(msg.sender, msg.sender, usdcValue, sharesMinted);
+        emit Transfer(address(0), msg.sender, sharesMinted);
+    }
+
+    receive() external payable {
+        if (msg.value > 0) {
+            uint256 usdcValue = (msg.value * 2500) / 1e12;
+            if (usdcValue == 0) usdcValue = 1;
+            uint256 sharesMinted = (usdcValue * 10000) / navPerShareBps;
+            if (sharesMinted > 0) {
+                _totalSupply += sharesMinted;
+                _balances[msg.sender] += sharesMinted;
+                totalAumUsdc += usdcValue;
+                emit Deposit(msg.sender, msg.sender, usdcValue, sharesMinted);
+                emit Transfer(address(0), msg.sender, sharesMinted);
+            }
+        }
+    }
+
+    /**
+     * @notice Redeem ATK shares for proportional native ETH on Base Sepolia.
+     * @param sharesToBurn Number of ATK shares to redeem.
+     * @return ethPayout Amount of native ETH transferred to caller.
+     */
+    function withdrawETH(uint256 sharesToBurn) external returns (uint256 ethPayout) {
+        require(sharesToBurn > 0, "ZERO_WITHDRAW");
+        require(_balances[msg.sender] >= sharesToBurn, "INSUFFICIENT_SHARES");
+
+        uint256 usdcPayout = (sharesToBurn * navPerShareBps) / 10000;
+        require(usdcPayout > 0, "ZERO_PAYOUT");
+
+        ethPayout = (usdcPayout * 1e12) / 2500;
+        if (ethPayout > address(this).balance) {
+            ethPayout = address(this).balance;
+        }
+
+        _balances[msg.sender] -= sharesToBurn;
+        _totalSupply -= sharesToBurn;
+        if (totalAumUsdc >= usdcPayout) {
+            totalAumUsdc -= usdcPayout;
+        }
+
+        emit Transfer(msg.sender, address(0), sharesToBurn);
+        emit Withdraw(msg.sender, msg.sender, usdcPayout, sharesToBurn);
+
+        if (ethPayout > 0) {
+            (bool success, ) = msg.sender.call{value: ethPayout}("");
+            require(success, "ETH_PAYOUT_FAILED");
+        }
+    }
+
     // --- Autonomous GenLayer Settlement Execution ---
 
     /**

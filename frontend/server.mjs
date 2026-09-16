@@ -2,6 +2,7 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { exec } from 'child_process';
 import { createClient, createAccount } from 'genlayer-js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -14,6 +15,12 @@ if (fs.existsSync(deployPath)) {
     deployData = JSON.parse(fs.readFileSync(deployPath, 'utf8'));
 }
 const CONTRACT_ADDRESS = deployData.contractAddress;
+
+const baseDeployPath = path.join(__dirname, '..', 'deployment_base_sepolia.json');
+let baseDeployData = { vaultAddress: "0xc6de87978cb91f387784a079b2188c9ebd309197", chainId: 84532 };
+if (fs.existsSync(baseDeployPath)) {
+    baseDeployData = JSON.parse(fs.readFileSync(baseDeployPath, 'utf8'));
+}
 const RPC_ENDPOINT = "https://studio.genlayer.com/api";
 
 const serverAccount = createAccount();
@@ -130,6 +137,18 @@ const server = http.createServer(async (req, res) => {
                 }
             });
         }
+        return;
+    }
+
+    // Route: GET /api/base/vault (Base Sepolia Vault configuration)
+    if (pathname === '/api/base/vault' && req.method === 'GET') {
+        sendJson(res, 200, {
+            success: true,
+            network: "Base Sepolia (L2)",
+            chainId: 84532,
+            vaultAddress: baseDeployData.vaultAddress,
+            basescan: `https://sepolia.basescan.org/address/${baseDeployData.vaultAddress}`
+        });
         return;
     }
 
@@ -325,6 +344,58 @@ const server = http.createServer(async (req, res) => {
                 console.error("Withdraw error:", err.message);
                 sendJson(res, 500, { success: false, error: err.message });
             }
+            return;
+        }
+
+        // Route: POST /api/base/deposit (Execute real depositETH on Base Sepolia)
+        if (pathname === '/api/base/deposit' && req.method === 'POST') {
+            const amountEth = payload.amountEth || 0.0005;
+            console.log(`[BASE SEPOLIA TX] Executing depositETH: ${amountEth} ETH`);
+            const projectRoot = path.join(__dirname, '..');
+            exec(`python base_transact.py deposit ${amountEth}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+                if (error) {
+                    console.error("Base deposit error:", stderr || error.message);
+                    sendJson(res, 500, { success: false, error: stderr || error.message });
+                    return;
+                }
+                try {
+                    const data = JSON.parse(stdout.trim().split('\n').pop());
+                    console.log(`[BASE SEPOLIA TX] Deposit confirmed! Hash: ${data.txHash}`);
+                    sendJson(res, 200, data);
+                } catch (parseErr) {
+                    sendJson(res, 200, {
+                        success: true,
+                        action: 'DEPOSIT_ETH',
+                        output: stdout
+                    });
+                }
+            });
+            return;
+        }
+
+        // Route: POST /api/base/withdraw (Execute real withdrawETH on Base Sepolia)
+        if (pathname === '/api/base/withdraw' && req.method === 'POST') {
+            const shares = parseInt(payload.shares) || 1;
+            console.log(`[BASE SEPOLIA TX] Executing withdrawETH: ${shares} shares`);
+            const projectRoot = path.join(__dirname, '..');
+            exec(`python base_transact.py withdraw ${shares}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+                if (error) {
+                    console.error("Base withdraw error:", stderr || error.message);
+                    sendJson(res, 500, { success: false, error: stderr || error.message });
+                    return;
+                }
+                try {
+                    const data = JSON.parse(stdout.trim().split('\n').pop());
+                    console.log(`[BASE SEPOLIA TX] Withdraw confirmed! Hash: ${data.txHash}`);
+                    sendJson(res, 200, data);
+                } catch (parseErr) {
+                    sendJson(res, 200, {
+                        success: true,
+                        action: 'WITHDRAW_ETH',
+                        output: stdout
+                    });
+                }
+            });
             return;
         }
 
