@@ -85,10 +85,10 @@
         </div>
 
         <!-- Explorer Link -->
-        <a href="https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C" target="_blank" 
+        <a id="headerExplorerLink" href="https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C" target="_blank" 
            class="hidden sm:flex items-center space-x-1.5 bg-cyan-950/50 hover:bg-cyan-900/60 border border-cyan-700/60 text-cyan-300 px-3 py-1.5 rounded-lg transition-colors font-medium">
           <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-          <span class="mono">0x2583...8cb8C</span>
+          <span id="headerExplorerText" class="mono">0x2583...8cb8C</span>
         </a>
 
         <!-- Demo Persona Switcher (For Judges / Instant Testing) -->
@@ -137,9 +137,9 @@
       <div class="flex items-center space-x-2 shrink-0">
         <select id="settlementChainSelect" onchange="switchSettlementTarget(this.value)" 
                 class="bg-slate-900 border border-slate-700 rounded-lg text-xs font-semibold px-3 py-2 text-indigo-300 focus:outline-none focus:border-cyan-500">
-          <option value="ARC_MAINNET">Circle Arc Mainnet (Native USDC Gas)</option>
-          <option value="BASE_SEPOLIA">Coinbase Base Sepolia (EVM L2)</option>
-          <option value="INTERNAL_GENLAYER">Internal GenLayer Synthetic Ledger</option>
+          <option value="BASE_SEPOLIA" selected>Coinbase Base Sepolia (Live EVM Vault 0x8A2c...6f4a)</option>
+          <option value="GENLAYER_STUDIO">GenLayer Studio (Autonomous AI Brain)</option>
+          <option value="BASE_MAINNET">Coinbase Base Mainnet (Production L2 Settlement)</option>
         </select>
       </div>
     </div>
@@ -1010,6 +1010,14 @@
               <td class="py-3 px-3 mono text-emerald-400 font-bold">$1.0050</td>
               <td class="py-3 px-3 text-right"><span class="text-emerald-400 font-bold">FINALIZED</span></td>
             </tr>
+            <tr>
+              <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 text-[10px] font-bold">BASE_DEPLOY</span></td>
+              <td class="py-3 px-3 mono text-cyan-400"><a href="https://sepolia.basescan.org/tx/0x365004d2944bf8f4fbcce5d89b42546755bba4e3d0c8617b4010b56e5a25b9e8" target="_blank" class="hover:underline">0x365004d2...25b9e8</a></td>
+              <td class="py-3 px-3"><span class="text-indigo-300 font-semibold">Base Sepolia L2</span></td>
+              <td class="py-3 px-3 text-slate-300">AlphaTankVault.sol Live at 0x8A2c...6f4a (Block 46914233)</td>
+              <td class="py-3 px-3 mono text-emerald-400 font-bold">$1.0000</td>
+              <td class="py-3 px-3 text-right"><span class="text-emerald-400 font-bold">CONFIRMED (L2)</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -1339,12 +1347,47 @@
 
     function switchSettlementTarget(target) {
       fundState.targetChain = target;
-      const names = {
-        "ARC_MAINNET": "Circle Arc Mainnet",
-        "BASE_SEPOLIA": "Coinbase Base Sepolia",
-        "INTERNAL_GENLAYER": "GenLayer Internal"
+      const configs = {
+        "BASE_SEPOLIA": {
+          name: "Coinbase Base Sepolia",
+          addressText: "0x8A2c...6f4a",
+          explorerUrl: "https://sepolia.basescan.org/address/0x8A2c266DBb4BDf7CEf19f621d21eBa22A13A6f4a",
+          badgeColor: "text-indigo-300",
+          chainIdHex: "0x14a34"
+        },
+        "GENLAYER_STUDIO": {
+          name: "GenLayer Studio (AI Brain)",
+          addressText: "0x2583...8cb8C",
+          explorerUrl: "https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C",
+          badgeColor: "text-cyan-300",
+          chainIdHex: null
+        },
+        "BASE_MAINNET": {
+          name: "Coinbase Base Mainnet",
+          addressText: "BaseScan L2",
+          explorerUrl: "https://basescan.org",
+          badgeColor: "text-emerald-300",
+          chainIdHex: "0x2105"
+        }
       };
-      document.getElementById('headerTargetBadge').innerText = names[target] || target;
+
+      const cfg = configs[target] || configs["BASE_SEPOLIA"];
+      document.getElementById('headerTargetBadge').innerText = cfg.name;
+      const link = document.getElementById('headerExplorerLink');
+      const text = document.getElementById('headerExplorerText');
+      if (link && text) {
+        link.href = cfg.explorerUrl;
+        text.innerText = cfg.addressText;
+      }
+
+      // Prompt MetaMask network switch if applicable
+      if (window.ethereum && isWeb3Connected && cfg.chainIdHex) {
+        window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: cfg.chainIdHex }]
+        }).catch(() => {});
+      }
+
       renderUI();
     }
 

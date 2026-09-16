@@ -146,22 +146,29 @@ const server = http.createServer(async (req, res) => {
         if (pathname === '/api/relay/dispatch' && req.method === 'POST') {
             const targetChain = payload.targetChain || "ARC_MAINNET";
             const chainConfigs = {
+                "BASE_SEPOLIA": {
+                    name: "Coinbase Base Sepolia",
+                    chainId: 84532,
+                    gasToken: "ETH",
+                    vaultAddress: "0x8A2c266DBb4BDf7CEf19f621d21eBa22A13A6f4a",
+                    explorerPrefix: "https://sepolia.basescan.org/tx/"
+                },
+                "BASE_MAINNET": {
+                    name: "Coinbase Base Mainnet",
+                    chainId: 8453,
+                    gasToken: "ETH",
+                    vaultAddress: "0x8A2c266DBb4BDf7CEf19f621d21eBa22A13A6f4a",
+                    explorerPrefix: "https://basescan.org/tx/"
+                },
                 "ARC_MAINNET": {
                     name: "Circle Arc Mainnet",
                     chainId: 42161,
                     gasToken: "USDC (Native Gas)",
                     vaultAddress: "0x777a82c4daF8c26a1D825F2F6812f9AA1e508cb8C",
                     explorerPrefix: "https://explorer.arc.circle.com/tx/"
-                },
-                "BASE_SEPOLIA": {
-                    name: "Coinbase Base Sepolia",
-                    chainId: 84532,
-                    gasToken: "ETH",
-                    vaultAddress: "0x888b82c4daF8c26a1D825F2F6812f9AA1e508cb8C",
-                    explorerPrefix: "https://sepolia.basescan.org/tx/"
                 }
             };
-            const config = chainConfigs[targetChain] || chainConfigs["ARC_MAINNET"];
+            const config = chainConfigs[targetChain] || chainConfigs["BASE_SEPOLIA"];
 
             let telemetry = null;
             try {

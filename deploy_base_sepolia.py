@@ -69,11 +69,15 @@ bytecode = "0x" + artifact["bytecode"]
 print("2. Broadcasting Deployment Transaction...")
 contract = w3.eth.contract(abi=abi, bytecode=bytecode)
 nonce = w3.eth.get_transaction_count(acct.address)
+estimated_gas = contract.constructor(USDC_BASE_SEPOLIA, acct.address).estimate_gas({'from': acct.address})
+gas_limit = int(estimated_gas * 1.25)
+print(f"Estimated Gas: {estimated_gas:,} (Limit: {gas_limit:,})")
+
 tx = contract.constructor(USDC_BASE_SEPOLIA, acct.address).build_transaction({
     'chainId': CHAIN_ID,
-    'gas': 3500000,
-    'maxFeePerGas': w3.to_wei('1.5', 'gwei'),
-    'maxPriorityFeePerGas': w3.to_wei('0.1', 'gwei'),
+    'gas': gas_limit,
+    'maxFeePerGas': w3.to_wei('0.1', 'gwei'),
+    'maxPriorityFeePerGas': w3.to_wei('0.01', 'gwei'),
     'nonce': nonce,
 })
 
