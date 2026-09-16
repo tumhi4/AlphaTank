@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "solc": "^0.8.37"
+  },
+  "dependencies": {
+    "genlayer-js": "^1.1.8"
   }
 }
