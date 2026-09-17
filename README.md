@@ -4,6 +4,7 @@
 [![GenLayer Studio](https://img.shields.io/badge/GenLayer-Studio_Testnet-6C5CE7)](https://studio.genlayer.com)
 [![GenLayer Contract](https://img.shields.io/badge/GenLayer_Brain-0x2583...8cb8C-00D2D3)](https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C)
 [![Base Sepolia Vault](https://img.shields.io/badge/Base_Vault-0xc6dE...09197-0984E3)](https://sepolia.basescan.org/address/0xc6dE87978cB91F387784a079B2188C9ebD309197)
+[![Base Mainnet Vault](https://img.shields.io/badge/Base_Mainnet-0xC1c7...44e8-0052FF)](https://basescan.org/address/0xC1c7758A6e0169871872B6545e88bef8f97a44e8)
 [![Author](https://img.shields.io/badge/Author-tumhi4-10B981)](https://github.com/tumhi4)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -122,6 +123,20 @@ AlphaTank guarantees investor capital protection through immutable, on-chain saf
 | **Collateral Deposit** | [`0x0f2257321e...`](https://sepolia.basescan.org/tx/0x0f2257321ebf5817a3a30a7d903f0b2f3a61f2fbb15ee61623512aeb7a00f28a) | `46914717` | **Success** | Deposited native collateral; minted 250,000 ATK shares |
 | **Collateral Redemption** | [`0xaefce70498...`](https://sepolia.basescan.org/tx/0xaefce70498118047ce5e82b7ca7f3630f9ff4330ba09ef784e60155b9a4c071d) | `46914766` | **Success** | Burned 1 ATK share; refunded native ETH payout |
 | **AI Mandate Execution** | [`0xd2089cfc4e...`](https://sepolia.basescan.org/tx/0xd2089cfc4e75d470d329af3bc679fa46cbd41cbe4e060bb0c823f0d88244c7c6) | `46919300` | **Success** | `executeRebalanceMandate`: verified consensus weights & emitted `MandateExecuted` |
+
+---
+
+### 3. Coinbase Base Mainnet (Live Production EVM Settlement Vault)
+- **Contract Address:** [`0xC1c7758A6e0169871872B6545e88bef8f97a44e8`](https://basescan.org/address/0xC1c7758A6e0169871872B6545e88bef8f97a44e8)
+- **Explorer:** [BaseScan Mainnet](https://basescan.org/address/0xC1c7758A6e0169871872B6545e88bef8f97a44e8)
+- **Chain ID:** `8453` | **Gas Token:** Base ETH (EIP-4844 Sub-Cent Blobspace)
+- **Settlement Asset:** Circle Native USDC (`0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`)
+
+#### Verified BaseScan Mainnet On-Chain Transactions (Mined on L2)
+| Action | BaseScan Mainnet Tx Hash | Block | Status | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **Mainnet Vault Deployment** | [`0xbf3da94c6c...`](https://basescan.org/tx/0xbf3da94c6c86a2063957bb021b330c4ef538ef3ce533e1b85916e35398a7b6ce) | `51409945` | **Success** | Deployed `AlphaTankVault.sol` with Circle Native USDC on Base Mainnet |
+| **Mainnet AI Mandate Execution** | [`0x17463cd11c...`](https://basescan.org/tx/0x17463cd11c81a058a9b6900dc0b5db5cdc12b9a337c6a082f97b31b2a9073d6a) | `51410095` | **Success** | `executeRebalanceMandate`: verified consensus weights (35% BTC / 25% ETH / 25% SOL / 15% Cash) & emitted `MandateExecuted` |
 
 ---
 

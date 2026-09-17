@@ -1144,11 +1144,11 @@
         id: 'BASE_MAINNET',
         slug: 'base-mainnet',
         name: 'Coinbase Base Mainnet',
-        title: 'Coinbase Base Mainnet — Production Institutional L2 Settlement',
-        desc: 'Production Institutional Architecture (Chain ID: 8453). EIP-4844 sub-cent settlement with Aerodrome AMM liquidity rebalancing and Aave V3 yield optimization.',
-        contractAddress: '0xc6de87978cb91f387784a079b2188c9ebd309197',
-        contractBadge: 'BaseScan L2 (8453)',
-        explorerUrl: 'https://basescan.org',
+        title: 'Coinbase Base Mainnet — Live EVM Settlement Vault',
+        desc: 'Live EVM Smart Contract (0xC1c7...44e8). Deployed on Coinbase Base Mainnet (Chain ID: 8453) with Circle Native USDC and sub-cent EIP-4844 settlement.',
+        contractAddress: '0xC1c7758A6e0169871872B6545e88bef8f97a44e8',
+        contractBadge: '0xC1c7...44e8',
+        explorerUrl: 'https://basescan.org/address/0xC1c7758A6e0169871872B6545e88bef8f97a44e8',
         explorerName: 'VIEW ON BASESCAN MAINNET',
         chainIdHex: '0x2105',
         themeColor: 'emerald'
@@ -1167,7 +1167,7 @@
         deposited: 500
       },
       operator: {
-        address: '0xaF3338e30d5a4E1F520959E7D55c687564B83c58',
+        address: '0x9d049BC7322af6CD28970cd758eB3A9cCd22056f',
         name: 'Deployer / Vault Owner',
         sharesGenLayer: 10000,
         sharesBase: 249999,
@@ -1215,29 +1215,31 @@
       ethFormatted: '0.000100 ETH',
       totalShares: 249999,
       totalAumUsdc: 0.25,
-      navBps: 10000,
+      navBps: 10600,
       regime: 'Base Sepolia L2',
       macroSentiment: 'Chain ID: 84532',
       circuitBreaker: false,
-      weights: { btc: 3000, eth: 3000, sol: 2500, cash: 1500 },
-      activeMandateHash: '0x6947c3b90416d8b9933004f882d93a343bfadcc59deb03a03499bd1acbcc952e',
-      rebalancesExecuted: 2,
+      weights: { btc: 3500, eth: 2500, sol: 2500, cash: 1500 },
+      activeMandateHash: '0xd2089cfc4e75d470d329af3bc679fa46cbd41cbe4e060bb0c823f0d88244c7c6',
+      rebalancesExecuted: 3,
       latestRationale: 'AlphaTank EVM Vault live on Base Sepolia. Backed by 0.000100 ETH collateral, executing GenLayer AI consensus rebalance mandates.'
     };
 
-    // Dedicated State 3: Base Mainnet Production Architecture
+    // Dedicated State 3: Base Mainnet Live EVM Vault (0xC1c7...44e8)
     const baseMainnetState = {
-      contractAddress: '0xc6de87978cb91f387784a079b2188c9ebd309197',
-      aumUsdc: 500000.00,
-      totalShares: 500000,
-      navBps: 10000,
-      regime: 'Coinbase Base L2',
-      macroSentiment: 'Gas Fee: < $0.01 / tx',
+      contractAddress: '0xC1c7758A6e0169871872B6545e88bef8f97a44e8',
+      ethBalance: 0.0,
+      ethFormatted: '0.000000 ETH',
+      totalShares: 0,
+      totalAumUsdc: 0.0,
+      navBps: 10600,
+      regime: 'Coinbase Base Mainnet (L2)',
+      macroSentiment: 'Chain ID: 8453',
       circuitBreaker: false,
       weights: { btc: 3500, eth: 2500, sol: 2500, cash: 1500 },
-      activeMandateHash: '0x8a2c266dbb4bdf7cef19f621d21eba22a13a6f4a000000000000000000000000',
-      rebalancesExecuted: 0,
-      latestRationale: 'Institutional production architecture ready on Base Mainnet. Direct EIP-4844 sub-cent transactions with Aerodrome AMM and Aave V3 yield generation.'
+      activeMandateHash: '0x17463cd11c81a058a9b6900dc0b5db5cdc12b9a337c6a082f97b31b2a9073d6a',
+      rebalancesExecuted: 1,
+      latestRationale: 'AlphaTank Vault live on Coinbase Base Mainnet. Backed by Circle Native USDC and sub-cent EIP-4844 settlement with verified AI rebalance consensus.'
     };
 
     // Helper to get active state object
@@ -1416,12 +1418,20 @@
       } else {
         tbody.innerHTML = `
           <tr>
-            <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] font-bold">MAINNET_SPEC</span></td>
-            <td class="py-3 px-3 mono text-cyan-400"><a href="https://basescan.org" target="_blank" class="hover:underline">0x8a2c266d...6f4a</a></td>
-            <td class="py-3 px-3"><span class="text-emerald-300 font-semibold">Coinbase Base L2 (8453)</span></td>
-            <td class="py-3 px-3 text-slate-300">Aerodrome AMM Liquidity + Aave V3 USDC Supply Routing</td>
+            <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 text-[10px] font-bold">MAINNET_REBALANCE</span></td>
+            <td class="py-3 px-3 mono text-cyan-400"><a href="https://basescan.org/tx/0x17463cd11c81a058a9b6900dc0b5db5cdc12b9a337c6a082f97b31b2a9073d6a" target="_blank" class="hover:underline">0x17463cd1...073d6a</a></td>
+            <td class="py-3 px-3"><span class="text-emerald-300 font-semibold">Base Mainnet L2</span></td>
+            <td class="py-3 px-3 text-slate-300">AI Mandate (BULL) &rarr; 35% BTC / 25% ETH / 25% SOL / 15% Cash (Block 51410095)</td>
+            <td class="py-3 px-3 mono text-emerald-400 font-bold">$1.0600</td>
+            <td class="py-3 px-3 text-right"><span class="text-emerald-400 font-bold">CONFIRMED (L2)</span></td>
+          </tr>
+          <tr>
+            <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] font-bold">MAINNET_DEPLOY</span></td>
+            <td class="py-3 px-3 mono text-cyan-400"><a href="https://basescan.org/tx/0xbf3da94c6c86a2063957bb021b330c4ef538ef3ce533e1b85916e35398a7b6ce" target="_blank" class="hover:underline">0xbf3da94c...8a7b6ce</a></td>
+            <td class="py-3 px-3"><span class="text-emerald-300 font-semibold">Base Mainnet L2</span></td>
+            <td class="py-3 px-3 text-slate-300">AlphaTankVault.sol Live at 0xC1c7...44e8 (Circle Native USDC)</td>
             <td class="py-3 px-3 mono text-emerald-400 font-bold">$1.0000</td>
-            <td class="py-3 px-3 text-right"><span class="text-emerald-400 font-bold">READY (PROD)</span></td>
+            <td class="py-3 px-3 text-right"><span class="text-emerald-400 font-bold">CONFIRMED (L2)</span></td>
           </tr>
         `;
       }
@@ -1480,6 +1490,28 @@
           }
         } catch (e) {
           console.warn('GenLayer telemetry fetch notice:', e.message);
+        }
+      } else if (activeNetwork === 'BASE_MAINNET') {
+        try {
+          const res = await fetch(`/api/base-mainnet/telemetry?address=${activeUserAddress}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.telemetry) {
+              const t = data.telemetry;
+              baseMainnetState.ethBalance = t.ethBalance;
+              baseMainnetState.ethFormatted = t.ethBalanceFormatted;
+              baseMainnetState.totalShares = t.totalShares;
+              baseMainnetState.totalAumUsdc = t.totalAumUsdc;
+              baseMainnetState.navBps = t.navBps;
+              baseMainnetState.contractAddress = t.vaultAddress;
+              if (t.weights) baseMainnetState.weights = t.weights;
+              if (t.userShares !== undefined) {
+                PERSONAS.operator.sharesBase = t.userShares;
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Base Mainnet telemetry fetch notice:', e.message);
         }
       }
       renderUI();
@@ -2362,19 +2394,58 @@
         return;
       }
 
-      // ROUTE 3: BASE MAINNET
-      setTimeout(() => {
+      // ROUTE 3: BASE MAINNET (Live EVM Smart Contract on Base Mainnet)
+      if (activeNetwork === 'BASE_MAINNET') {
+        btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> EXECUTING ON-CHAIN BASE MAINNET MANDATE...';
+        try {
+          const res = await fetch('/api/base-mainnet/rebalance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scenario: scenario })
+          });
+
+          if (res.ok) {
+            const result = await res.json();
+            btn.innerHTML = oldHtml;
+            btn.disabled = false;
+
+            if (result.telemetry) {
+              baseMainnetState.weights = result.telemetry.weights || baseMainnetState.weights;
+              baseMainnetState.navBps = result.telemetry.navBps || baseMainnetState.navBps;
+              baseMainnetState.activeMandateHash = result.telemetry.mandateHash || baseMainnetState.activeMandateHash;
+              baseMainnetState.latestRationale = result.telemetry.rationale || baseMainnetState.latestRationale;
+              baseMainnetState.regime = result.telemetry.regime || baseMainnetState.regime;
+            }
+
+            showTxModal(
+              'REAL AI REBALANCE SETTLED ON BASE MAINNET!',
+              result.txHash,
+              `GenLayer AI Consensus reached! Rebalance mandate (${scenario}) executed on Base Mainnet Smart Contract at 0xC1c7...44e8 in Block #${result.blockNumber}.`,
+              result.basescan,
+              'VIEW ON BASESCAN MAINNET',
+              `Coinbase Base Mainnet EVM Execution Confirmed (Block #${result.blockNumber})`
+            );
+
+            addAuditLogRow(
+              'MAINNET_REBALANCE',
+              result.txHash,
+              'Base Mainnet L2',
+              `AI Mandate (${scenario}) &rarr; ${result.weights.btc/100}% BTC / ${result.weights.eth/100}% ETH / ${result.weights.sol/100}% SOL / ${result.weights.cash/100}% Cash`,
+              `$${(result.navBps / 10000).toFixed(4)}`,
+              'CONFIRMED (L2)'
+            );
+
+            await loadNetworkTelemetry();
+            return;
+          }
+        } catch (e) {
+          console.error("Base Mainnet rebalance error:", e);
+        }
+
         btn.innerHTML = oldHtml;
         btn.disabled = false;
-        showTxModal(
-          'BASE MAINNET REBALANCE BROADCASTED',
-          '0x8a2c266dbb4bdf7cef19f621d21eba22a13a6f4a7c8e9f0123456789abcdef01',
-          'Base Mainnet production rebalance scheduled via Aerodrome AMM.',
-          'https://basescan.org',
-          'VIEW ON BASESCAN MAINNET',
-          'Production L2 Settlement Scheduled'
-        );
-      }, 750);
+        return;
+      }
     }
 
     // =========================================================================

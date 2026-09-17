@@ -21,6 +21,12 @@ let baseDeployData = { vaultAddress: "0xc6de87978cb91f387784a079b2188c9ebd309197
 if (fs.existsSync(baseDeployPath)) {
     baseDeployData = JSON.parse(fs.readFileSync(baseDeployPath, 'utf8'));
 }
+
+const baseMainnetDeployPath = path.join(__dirname, '..', 'deployment_base_mainnet.json');
+let baseMainnetDeployData = { vaultAddress: "0xC1c7758A6e0169871872B6545e88bef8f97a44e8", chainId: 8453 };
+if (fs.existsSync(baseMainnetDeployPath)) {
+    baseMainnetDeployData = JSON.parse(fs.readFileSync(baseMainnetDeployPath, 'utf8'));
+}
 const RPC_ENDPOINT = "https://studio.genlayer.com/api";
 
 const serverAccount = createAccount();
@@ -172,6 +178,38 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // Route: GET /api/base-mainnet/vault (Base Mainnet Vault configuration)
+    if (pathname === '/api/base-mainnet/vault' && req.method === 'GET') {
+        sendJson(res, 200, {
+            success: true,
+            network: "Base Mainnet (L2)",
+            chainId: 8453,
+            vaultAddress: baseMainnetDeployData.vaultAddress,
+            basescan: `https://basescan.org/address/${baseMainnetDeployData.vaultAddress}`
+        });
+        return;
+    }
+
+    // Route: GET /api/base-mainnet/telemetry (Real on-chain Base Mainnet live telemetry)
+    if (pathname === '/api/base-mainnet/telemetry' && req.method === 'GET') {
+        const address = parsedUrl.searchParams.get('address') || '';
+        const projectRoot = path.join(__dirname, '..');
+        exec(`python base_mainnet_transact.py telemetry ${address}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+            if (error) {
+                console.error("Base Mainnet telemetry error:", stderr || error.message);
+                sendJson(res, 500, { error: stderr || error.message });
+                return;
+            }
+            try {
+                const data = JSON.parse(stdout.trim().split('\n').pop());
+                sendJson(res, 200, { success: true, telemetry: data });
+            } catch (err) {
+                sendJson(res, 500, { error: "Failed to parse telemetry JSON" });
+            }
+        });
+        return;
+    }
+
     // Helper to read JSON request body
     let body = '';
     req.on('data', chunk => { body += chunk; });
@@ -196,7 +234,7 @@ const server = http.createServer(async (req, res) => {
                     name: "Coinbase Base Mainnet",
                     chainId: 8453,
                     gasToken: "ETH",
-                    vaultAddress: baseDeployData.vaultAddress,
+                    vaultAddress: baseMainnetDeployData.vaultAddress,
                     explorerPrefix: "https://basescan.org/tx/"
                 },
                 "ARC_MAINNET": {
@@ -452,6 +490,46 @@ const server = http.createServer(async (req, res) => {
                     sendJson(res, 200, {
                         success: true,
                         action: 'BASE_REBALANCE',
+                        output: stdout
+                    });
+                }
+            });
+            return;
+        }
+
+        // Route: POST /api/base-mainnet/rebalance (Execute real executeRebalanceMandate on Base Mainnet)
+        if (pathname === '/api/base-mainnet/rebalance' && req.method === 'POST') {
+            const scenario = payload.scenario || "BULL";
+            console.log(`[BASE MAINNET TX] Executing rebalance mandate: ${scenario}`);
+            const projectRoot = path.join(__dirname, '..');
+            exec(`python base_mainnet_transact.py rebalance ${scenario}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+                if (error) {
+                    console.error("Base Mainnet rebalance error:", stderr || error.message);
+                    sendJson(res, 500, { success: false, error: stderr || error.message });
+                    return;
+                }
+                try {
+                    const data = JSON.parse(stdout.trim().split('\n').pop());
+                    console.log(`[BASE MAINNET TX] Rebalance confirmed on BaseScan! Hash: ${data.txHash}`);
+                    sendJson(res, 200, {
+                        success: true,
+                        action: 'BASE_MAINNET_REBALANCE',
+                        txHash: data.txHash,
+                        basescan: data.basescan,
+                        blockNumber: data.blockNumber,
+                        mandateHash: data.mandateHash,
+                        scenario: data.scenario,
+                        regime: data.regime,
+                        rationale: data.rationale,
+                        weights: data.weights,
+                        navBps: data.navBps,
+                        navDollars: data.navDollars,
+                        telemetry: data
+                    });
+                } catch (parseErr) {
+                    sendJson(res, 200, {
+                        success: true,
+                        action: 'BASE_MAINNET_REBALANCE',
                         output: stdout
                     });
                 }

@@ -1,0 +1,9 @@
+{
+  "network": "base_mainnet",
+  "chainId": 8453,
+  "vaultAddress": "0xC1c7758A6e0169871872B6545e88bef8f97a44e8",
+  "txHash": "0xbf3da94c6c86a2063957bb021b330c4ef538ef3ce533e1b85916e35398a7b6ce",
+  "usdcToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  "deployer": "0x9d049BC7322af6CD28970cd758eB3A9cCd22056f",
+  "basescan": "https://basescan.org/address/0xC1c7758A6e0169871872B6545e88bef8f97a44e8"
+}
