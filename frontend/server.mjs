@@ -2,11 +2,34 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import { createClient, createAccount } from 'genlayer-js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = 3000;
+
+// Security Sanitization Helpers
+function runPythonScript(scriptName, args, callback) {
+    const projectRoot = path.join(__dirname, '..');
+    const safeArgs = args.filter(a => a !== undefined && a !== null).map(a => String(a));
+    execFile('python', [scriptName, ...safeArgs], { cwd: projectRoot }, callback);
+}
+
+function sanitizeAddress(addr) {
+    if (!addr) return '';
+    const clean = String(addr).trim();
+    return /^0x[a-fA-F0-9]{40}$/.test(clean) ? clean : '';
+}
+
+function sanitizeScenario(scen) {
+    const clean = String(scen || '').toUpperCase().trim();
+    return ['BULL', 'NEUTRAL', 'CRASH'].includes(clean) ? clean : 'BULL';
+}
+
+function sanitizePositiveNumber(val, defaultVal = 1) {
+    const num = parseFloat(val);
+    return isNaN(num) || num <= 0 ? defaultVal : num;
+}
 
 // Load deployment details
 const deployPath = path.join(__dirname, '..', 'deployment.json');
@@ -172,9 +195,9 @@ const server = http.createServer(async (req, res) => {
 
     // Route: GET /api/base/telemetry (Real on-chain Base Sepolia live telemetry)
     if (pathname === '/api/base/telemetry' && req.method === 'GET') {
-        const address = parsedUrl.searchParams.get('address') || '';
-        const projectRoot = path.join(__dirname, '..');
-        exec(`python base_transact.py telemetry ${address}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+        const address = sanitizeAddress(parsedUrl.searchParams.get('address'));
+        const scriptArgs = address ? ['telemetry', address] : ['telemetry'];
+        runPythonScript('base_transact.py', scriptArgs, (error, stdout, stderr) => {
             if (error) {
                 console.error("Base telemetry error:", stderr || error.message);
                 sendJson(res, 500, { error: stderr || error.message });
@@ -204,9 +227,9 @@ const server = http.createServer(async (req, res) => {
 
     // Route: GET /api/base-mainnet/telemetry (Real on-chain Base Mainnet live telemetry)
     if (pathname === '/api/base-mainnet/telemetry' && req.method === 'GET') {
-        const address = parsedUrl.searchParams.get('address') || '';
-        const projectRoot = path.join(__dirname, '..');
-        exec(`python base_mainnet_transact.py telemetry ${address}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+        const address = sanitizeAddress(parsedUrl.searchParams.get('address'));
+        const scriptArgs = address ? ['telemetry', address] : ['telemetry'];
+        runPythonScript('base_mainnet_transact.py', scriptArgs, (error, stdout, stderr) => {
             if (error) {
                 console.error("Base Mainnet telemetry error:", stderr || error.message);
                 sendJson(res, 500, { error: stderr || error.message });
@@ -413,10 +436,9 @@ const server = http.createServer(async (req, res) => {
 
         // Route: POST /api/base/deposit (Execute real depositETH on Base Sepolia)
         if (pathname === '/api/base/deposit' && req.method === 'POST') {
-            const amountEth = payload.amountEth || 0.0005;
+            const amountEth = sanitizePositiveNumber(payload.amountEth, 0.0005);
             console.log(`[BASE SEPOLIA TX] Executing depositETH: ${amountEth} ETH`);
-            const projectRoot = path.join(__dirname, '..');
-            exec(`python base_transact.py deposit ${amountEth}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+            runPythonScript('base_transact.py', ['deposit', amountEth], (error, stdout, stderr) => {
                 if (error) {
                     console.error("Base deposit error:", stderr || error.message);
                     sendJson(res, 500, { success: false, error: stderr || error.message });
@@ -439,10 +461,9 @@ const server = http.createServer(async (req, res) => {
 
         // Route: POST /api/base/withdraw (Execute real withdrawETH on Base Sepolia)
         if (pathname === '/api/base/withdraw' && req.method === 'POST') {
-            const shares = parseInt(payload.shares) || 1;
+            const shares = sanitizePositiveNumber(payload.shares, 1);
             console.log(`[BASE SEPOLIA TX] Executing withdrawETH: ${shares} shares`);
-            const projectRoot = path.join(__dirname, '..');
-            exec(`python base_transact.py withdraw ${shares}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+            runPythonScript('base_transact.py', ['withdraw', shares], (error, stdout, stderr) => {
                 if (error) {
                     console.error("Base withdraw error:", stderr || error.message);
                     sendJson(res, 500, { success: false, error: stderr || error.message });
@@ -465,10 +486,9 @@ const server = http.createServer(async (req, res) => {
 
         // Route: POST /api/base/rebalance (Execute real executeRebalanceMandate on Base Sepolia)
         if (pathname === '/api/base/rebalance' && req.method === 'POST') {
-            const scenario = payload.scenario || "BULL";
+            const scenario = sanitizeScenario(payload.scenario);
             console.log(`[BASE SEPOLIA TX] Executing rebalance mandate: ${scenario}`);
-            const projectRoot = path.join(__dirname, '..');
-            exec(`python base_transact.py rebalance ${scenario}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+            runPythonScript('base_transact.py', ['rebalance', scenario], (error, stdout, stderr) => {
                 if (error) {
                     console.error("Base rebalance error:", stderr || error.message);
                     sendJson(res, 500, { success: false, error: stderr || error.message });
@@ -505,10 +525,9 @@ const server = http.createServer(async (req, res) => {
 
         // Route: POST /api/base-mainnet/rebalance (Execute real executeRebalanceMandate on Base Mainnet)
         if (pathname === '/api/base-mainnet/rebalance' && req.method === 'POST') {
-            const scenario = payload.scenario || "BULL";
+            const scenario = sanitizeScenario(payload.scenario);
             console.log(`[BASE MAINNET TX] Executing rebalance mandate: ${scenario}`);
-            const projectRoot = path.join(__dirname, '..');
-            exec(`python base_mainnet_transact.py rebalance ${scenario}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+            runPythonScript('base_mainnet_transact.py', ['rebalance', scenario], (error, stdout, stderr) => {
                 if (error) {
                     console.error("Base Mainnet rebalance error:", stderr || error.message);
                     sendJson(res, 500, { success: false, error: stderr || error.message });
@@ -545,10 +564,9 @@ const server = http.createServer(async (req, res) => {
 
         // Route: POST /api/base-mainnet/deposit (Execute deposit on Base Mainnet)
         if (pathname === '/api/base-mainnet/deposit' && req.method === 'POST') {
-            const amount = payload.amountUsdc || payload.amount || 100;
+            const amount = sanitizePositiveNumber(payload.amountUsdc || payload.amount, 100);
             console.log(`[BASE MAINNET TX] Processing deposit: ${amount} USDC`);
-            const projectRoot = path.join(__dirname, '..');
-            exec(`python base_mainnet_transact.py deposit ${amount}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+            runPythonScript('base_mainnet_transact.py', ['deposit', amount], (error, stdout, stderr) => {
                 if (error) {
                     console.error("Base Mainnet deposit error:", stderr || error.message);
                     sendJson(res, 500, { success: false, error: stderr || error.message });
@@ -571,10 +589,9 @@ const server = http.createServer(async (req, res) => {
 
         // Route: POST /api/base-mainnet/withdraw (Execute withdraw on Base Mainnet)
         if (pathname === '/api/base-mainnet/withdraw' && req.method === 'POST') {
-            const shares = payload.shares || 100;
+            const shares = sanitizePositiveNumber(payload.shares, 100);
             console.log(`[BASE MAINNET TX] Processing withdraw: ${shares} ATK shares`);
-            const projectRoot = path.join(__dirname, '..');
-            exec(`python base_mainnet_transact.py withdraw ${shares}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+            runPythonScript('base_mainnet_transact.py', ['withdraw', shares], (error, stdout, stderr) => {
                 if (error) {
                     console.error("Base Mainnet withdraw error:", stderr || error.message);
                     sendJson(res, 500, { success: false, error: stderr || error.message });
