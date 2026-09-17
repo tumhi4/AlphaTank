@@ -2678,10 +2678,11 @@
       const navDollars = st.navBps / 10000;
       const el = document.getElementById('depositSharesPreview');
       if (!el) return;
-      if (activeNetwork === 'BASE_SEPOLIA') {
+      if (activeNetwork === 'BASE_SEPOLIA' || activeNetwork === 'BASE_MAINNET') {
         const usdcVal = amount * 2500;
-        const shares = navDollars > 0 ? (usdcVal / navDollars).toFixed(2) : '0.00';
-        el.innerText = `${shares} ATK ($${usdcVal.toFixed(2)} value)`;
+        const shares = navDollars > 0 ? (usdcVal / navDollars) : 0;
+        const formattedShares = shares >= 10 ? shares.toFixed(2) : (shares > 0 ? shares.toFixed(4) : '0.00');
+        el.innerText = `${formattedShares} ATK ($${usdcVal.toFixed(2)} value)`;
       } else {
         const shares = amount > 0 && navDollars > 0 ? (amount / navDollars).toFixed(2) : '0.00';
         el.innerText = `${shares} ATK`;
@@ -2695,7 +2696,7 @@
       const usdcPayout = shares * navDollars;
       const el = document.getElementById('withdrawPayoutPreview');
       if (!el) return;
-      if (activeNetwork === 'BASE_SEPOLIA') {
+      if (activeNetwork === 'BASE_SEPOLIA' || activeNetwork === 'BASE_MAINNET') {
         const ethPayout = (usdcPayout / 2500).toFixed(6);
         el.innerText = `~${ethPayout} ETH ($${usdcPayout.toFixed(2)} USDC)`;
       } else {
