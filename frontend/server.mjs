@@ -78,6 +78,18 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // Route: Static Assets (logos, icons, images)
+    if (pathname.startsWith('/assets/')) {
+        const filePath = path.join(__dirname, pathname);
+        if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+            const ext = path.extname(filePath).toLowerCase();
+            const mime = ext === '.png' ? 'image/png' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : ext === '.svg' ? 'image/svg+xml' : ext === '.webp' ? 'image/webp' : 'application/octet-stream';
+            res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': 'public, max-age=86400' });
+            res.end(fs.readFileSync(filePath));
+            return;
+        }
+    }
+
     // Route: GET /api/telemetry (Real on-chain read)
     if (pathname === '/api/telemetry' && req.method === 'GET') {
         try {
