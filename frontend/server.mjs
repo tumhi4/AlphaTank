@@ -63,8 +63,8 @@ const server = http.createServer(async (req, res) => {
     const parsedUrl = new URL(req.url, `http://localhost:${PORT}`);
     const pathname = parsedUrl.pathname;
 
-    // Route: Static Frontend
-    if (pathname === '/' || pathname === '/index.html') {
+    // Route: Static Frontend (supports multi-network URLs)
+    if (pathname === '/' || pathname === '/index.html' || pathname === '/genlayer' || pathname === '/base-sepolia' || pathname === '/base-mainnet') {
         const htmlPath = path.join(__dirname, 'index.html');
         const content = fs.readFileSync(htmlPath, 'utf8');
         res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -152,6 +152,26 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // Route: GET /api/base/telemetry (Real on-chain Base Sepolia live telemetry)
+    if (pathname === '/api/base/telemetry' && req.method === 'GET') {
+        const address = parsedUrl.searchParams.get('address') || '';
+        const projectRoot = path.join(__dirname, '..');
+        exec(`python base_transact.py telemetry ${address}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+            if (error) {
+                console.error("Base telemetry error:", stderr || error.message);
+                sendJson(res, 500, { error: stderr || error.message });
+                return;
+            }
+            try {
+                const data = JSON.parse(stdout.trim().split('\n').pop());
+                sendJson(res, 200, { success: true, telemetry: data });
+            } catch (err) {
+                sendJson(res, 500, { error: "Failed to parse telemetry JSON" });
+            }
+        });
+        return;
+    }
+
     // Helper to read JSON request body
     let body = '';
     req.on('data', chunk => { body += chunk; });
@@ -169,14 +189,14 @@ const server = http.createServer(async (req, res) => {
                     name: "Coinbase Base Sepolia",
                     chainId: 84532,
                     gasToken: "ETH",
-                    vaultAddress: "0x8A2c266DBb4BDf7CEf19f621d21eBa22A13A6f4a",
+                    vaultAddress: baseDeployData.vaultAddress,
                     explorerPrefix: "https://sepolia.basescan.org/tx/"
                 },
                 "BASE_MAINNET": {
                     name: "Coinbase Base Mainnet",
                     chainId: 8453,
                     gasToken: "ETH",
-                    vaultAddress: "0x8A2c266DBb4BDf7CEf19f621d21eBa22A13A6f4a",
+                    vaultAddress: baseDeployData.vaultAddress,
                     explorerPrefix: "https://basescan.org/tx/"
                 },
                 "ARC_MAINNET": {
