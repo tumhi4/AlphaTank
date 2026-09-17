@@ -111,12 +111,58 @@
         </div>
 
         <!-- Web3 Wallet Container (Shown on Base Sepolia & Base Mainnet) -->
-        <div id="web3WalletContainer">
-          <button id="btnConnectWallet" onclick="connectWeb3Wallet()" 
+        <div id="web3WalletContainer" class="relative">
+          <!-- Disconnected state button -->
+          <button id="btnConnectWallet" onclick="handleWalletButtonClick()" 
                   class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs px-4 py-2 rounded-xl transition-all shadow-md shadow-emerald-500/20 flex items-center space-x-1.5 cursor-pointer">
             <i data-lucide="wallet" class="w-3.5 h-3.5 text-slate-950"></i>
             <span id="walletBtnText">Connect Wallet</span>
           </button>
+
+          <!-- Connected state pill with dropdown toggle -->
+          <div id="walletConnectedPill" class="hidden relative">
+            <button onclick="toggleWalletDropdown(event)" 
+                    class="bg-slate-900 hover:bg-slate-800 border border-emerald-500/50 hover:border-emerald-400 text-emerald-300 font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow-sm flex items-center space-x-2 cursor-pointer">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="walletPillAddress" class="mono text-xs text-white">0x0000...0000</span>
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+            </button>
+
+            <!-- Wallet Dropdown Menu -->
+            <div id="walletDropdownMenu" class="hidden absolute right-0 mt-2 w-72 bg-slate-950 border border-slate-700/90 rounded-2xl p-4 shadow-2xl z-50 space-y-3 glass-panel">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Connected Wallet</span>
+                <span id="walletNetworkBadge" class="text-[10px] mono px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold">Base Mainnet</span>
+              </div>
+              
+              <div>
+                <div class="text-[10px] text-slate-400 mb-1">Active Address:</div>
+                <div class="flex items-center justify-between bg-slate-900 p-2 rounded-xl border border-slate-800">
+                  <span id="walletFullAddress" class="mono text-[11px] text-slate-200 truncate max-w-[170px]">0x0000...0000</span>
+                  <div class="flex items-center space-x-1 shrink-0">
+                    <button onclick="copyWalletAddress()" class="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-white cursor-pointer" title="Copy Address">
+                      <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <a id="walletExplorerLink" href="#" target="_blank" class="p-1 hover:bg-slate-800 rounded text-cyan-400 hover:text-cyan-300" title="View on Explorer">
+                      <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Switch Account & Disconnect Buttons -->
+              <div class="pt-1 space-y-2 border-t border-slate-800/80">
+                <button onclick="switchWeb3Account()" class="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Switch / Change Account</span>
+                </button>
+                <button onclick="disconnectWeb3Wallet()" class="w-full py-2 px-3 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/80 text-rose-300 hover:text-rose-100 text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer">
+                  <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                  <span>Disconnect Wallet</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -290,14 +336,14 @@
           <!-- KPI 1: Vault Assets -->
           <div class="p-3 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-0.5">
             <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Vault Assets</span>
-            <div id="kpiAum" class="text-base sm:text-lg font-black mono text-white truncate">$10,652.00 USDC</div>
-            <div id="kpiAumSub" class="text-[10px] text-emerald-400 font-semibold truncate">Total Reserves</div>
+            <div id="kpiAum" class="text-base sm:text-lg font-black mono text-white truncate">$0.00 USDC</div>
+            <div id="kpiAumSub" class="text-[10px] text-emerald-400 font-semibold truncate">Circle Native USDC</div>
           </div>
 
           <!-- KPI 2: Total ATK Supply -->
           <div class="p-3 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-0.5">
             <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Share Supply</span>
-            <div id="kpiSupply" class="text-base sm:text-lg font-black mono text-cyan-300 truncate">249,999 ATK</div>
+            <div id="kpiSupply" class="text-base sm:text-lg font-black mono text-cyan-300 truncate">0 ATK</div>
             <div id="kpiSupplySub" class="text-[10px] text-slate-400 truncate">10,600 bps basis</div>
           </div>
 
@@ -551,7 +597,7 @@
           </p>
         </div>
         <div class="text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl mono text-cyan-300 flex items-center space-x-2">
-          <span>AUM: <strong id="allocAumDisplay" class="text-white">$10,652.00 USDC</strong></span>
+          <span>AUM: <strong id="allocAumDisplay" class="text-white">$0.00 USDC</strong></span>
           <span>&bull;</span>
           <span>Invariants: <strong class="text-emerald-400">100.00% (10,000 bps)</strong></span>
         </div>
@@ -584,7 +630,7 @@
           </div>
           <div>
             <div class="text-[10px] text-slate-400">Capital Invested:</div>
-            <div id="allocUsdcBtc" class="text-xl font-black mono text-white">$3,728.20</div>
+            <div id="allocUsdcBtc" class="text-xl font-black mono text-white">$0.00</div>
           </div>
           <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between">
             <span>Target BPS:</span>
@@ -606,7 +652,7 @@
           </div>
           <div>
             <div class="text-[10px] text-slate-400">Capital Invested:</div>
-            <div id="allocUsdcEth" class="text-xl font-black mono text-white">$2,663.00</div>
+            <div id="allocUsdcEth" class="text-xl font-black mono text-white">$0.00</div>
           </div>
           <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between">
             <span>Target BPS:</span>
@@ -628,7 +674,7 @@
           </div>
           <div>
             <div class="text-[10px] text-slate-400">Capital Invested:</div>
-            <div id="allocUsdcSol" class="text-xl font-black mono text-white">$2,663.00</div>
+            <div id="allocUsdcSol" class="text-xl font-black mono text-white">$0.00</div>
           </div>
           <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between">
             <span>Target BPS:</span>
@@ -650,7 +696,7 @@
           </div>
           <div>
             <div class="text-[10px] text-slate-400">Capital Invested:</div>
-            <div id="allocUsdcCash" class="text-xl font-black mono text-white">$1,597.80</div>
+            <div id="allocUsdcCash" class="text-xl font-black mono text-white">$0.00</div>
           </div>
           <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between">
             <span>Safety Floor:</span>
@@ -666,31 +712,31 @@
           <div class="flex items-center space-x-2">
             <i data-lucide="user-check" class="w-4 h-4 text-cyan-400"></i>
             <span class="font-bold text-xs text-white">Connected Investor Claim:</span>
-            <span id="investorAddressDisplay" class="mono text-xs text-cyan-300 font-semibold bg-cyan-950/60 px-2 py-0.5 rounded-lg border border-cyan-800/60">0x9d04...056f (Operator)</span>
+            <span id="investorAddressDisplay" class="mono text-xs text-slate-400 font-semibold bg-slate-950/60 px-2 py-0.5 rounded-lg border border-slate-800">Wallet Not Connected</span>
           </div>
           <div class="text-xs text-slate-400 flex items-center space-x-3">
-            <span>Shares: <strong id="userSharesDisplay" class="mono text-white">249,999 ATK</strong></span>
-            <span>Value: <strong id="userValueDisplay" class="mono text-emerald-400 font-bold">$264,998.94 USDC</strong></span>
-            <span class="text-emerald-400 font-semibold bg-emerald-950/40 px-2 py-0.5 rounded-lg border border-emerald-800/60" id="userPnlDisplay">+$14,999.94 (+6.00% PnL)</span>
+            <span>Shares: <strong id="userSharesDisplay" class="mono text-white">0 ATK</strong></span>
+            <span>Value: <strong id="userValueDisplay" class="mono text-emerald-400 font-bold">$0.00 USDC</strong></span>
+            <span class="text-emerald-400 font-semibold bg-emerald-950/40 px-2 py-0.5 rounded-lg border border-emerald-800/60" id="userPnlDisplay">+$0.00 (+0.00% PnL)</span>
           </div>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
           <div class="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
             <span class="text-[10px] text-slate-400 block">Claim on Bitcoin (35%)</span>
-            <span id="userBtcVal" class="mono font-bold text-amber-300 text-sm">$92,749.63</span>
+            <span id="userBtcVal" class="mono font-bold text-amber-300 text-sm">$0.00</span>
           </div>
           <div class="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
             <span class="text-[10px] text-slate-400 block">Claim on Ethereum (25%)</span>
-            <span id="userEthVal" class="mono font-bold text-indigo-300 text-sm">$66,249.74</span>
+            <span id="userEthVal" class="mono font-bold text-indigo-300 text-sm">$0.00</span>
           </div>
           <div class="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
             <span class="text-[10px] text-slate-400 block">Claim on Solana (25%)</span>
-            <span id="userSolVal" class="mono font-bold text-purple-300 text-sm">$66,249.74</span>
+            <span id="userSolVal" class="mono font-bold text-purple-300 text-sm">$0.00</span>
           </div>
           <div class="p-2.5 bg-slate-950/60 rounded-xl border border-slate-800">
             <span class="text-[10px] text-slate-400 block">Claim on Cash Buffer (15%)</span>
-            <span id="userCashVal" class="mono font-bold text-emerald-300 text-sm">$39,749.84</span>
+            <span id="userCashVal" class="mono font-bold text-emerald-300 text-sm">$0.00</span>
           </div>
         </div>
       </div>
@@ -916,7 +962,7 @@
         address: '0x9d049BC7322af6CD28970cd758eB3A9cCd22056f',
         name: 'Deployer / Vault Owner',
         sharesGenLayer: 10000,
-        sharesBase: 249999,
+        sharesBase: 0,
         deposited: 10000
       },
       bob: {
@@ -936,7 +982,7 @@
     };
 
     let activePersonaKey = 'operator';
-    let activeUserAddress = PERSONAS.operator.address;
+    let activeUserAddress = null;
     let isWeb3Connected = false;
 
     // Dedicated State 1: GenLayer Studio Intelligent Contract
@@ -957,10 +1003,10 @@
     // Dedicated State 2: Base Sepolia Live EVM Vault (0xc6de...9197)
     const baseSepoliaState = {
       contractAddress: '0xc6de87978cb91f387784a079b2188c9ebd309197',
-      ethBalance: 0.0001,
-      ethFormatted: '0.000100 ETH',
-      totalShares: 249999,
-      totalAumUsdc: 0.25,
+      ethBalance: 0.0011,
+      ethFormatted: '0.001100 ETH',
+      totalShares: 2608489,
+      totalAumUsdc: 2.76,
       navBps: 10600,
       regime: 'Base Sepolia (84532)',
       macroSentiment: 'Chain ID: 84532',
@@ -968,7 +1014,7 @@
       weights: { btc: 3500, eth: 2500, sol: 2500, cash: 1500 },
       activeMandateHash: '0xd2089cfc4e75d470d329af3bc679fa46cbd41cbe4e060bb0c823f0d88244c7c6',
       rebalancesExecuted: 3,
-      latestRationale: 'AlphaTank EVM Vault live on Base Sepolia. Backed by 0.000100 ETH collateral, executing GenLayer AI consensus rebalance mandates.'
+      latestRationale: 'AlphaTank EVM Vault live on Base Sepolia. Backed by native ETH collateral, executing GenLayer AI consensus rebalance mandates.'
     };
 
     // Dedicated State 3: Base Mainnet Live EVM Vault (0xC1c7...44e8)
@@ -976,10 +1022,10 @@
       contractAddress: '0xC1c7758A6e0169871872B6545e88bef8f97a44e8',
       ethBalance: 0.0,
       ethFormatted: '0.000000 ETH',
-      usdcBalance: 10652.00,
-      usdcFormatted: '$10,652.00 USDC',
-      totalShares: 249999,
-      totalAumUsdc: 10652.00,
+      usdcBalance: 0.0,
+      usdcFormatted: '$0.00 USDC',
+      totalShares: 0,
+      totalAumUsdc: 0.0,
       navBps: 10600,
       regime: 'Base Mainnet (8453)',
       macroSentiment: 'Chain ID: 8453',
@@ -1201,6 +1247,7 @@
       } else {
         if (personaContainer) personaContainer.classList.add('hidden');
         if (web3WalletContainer) web3WalletContainer.classList.remove('hidden');
+        updateWalletUI();
       }
 
       // 4. Update Header Explorer Link
@@ -1332,23 +1379,21 @@
     async function loadNetworkTelemetry() {
       if (activeNetwork === 'BASE_MAINNET') {
         try {
-          const res = await fetch(`/api/base-mainnet/telemetry?address=${activeUserAddress}`);
+          const addrParam = (isWeb3Connected && activeUserAddress) ? `?address=${activeUserAddress}` : '';
+          const res = await fetch(`/api/base-mainnet/telemetry${addrParam}`);
           if (res.ok) {
             const data = await res.json();
             if (data.success && data.telemetry) {
               const t = data.telemetry;
-              baseMainnetState.ethBalance = t.ethBalance;
-              baseMainnetState.ethFormatted = t.ethBalanceFormatted;
+              baseMainnetState.ethBalance = t.ethBalance || 0;
+              baseMainnetState.ethFormatted = t.ethBalanceFormatted || '0.000000 ETH';
               baseMainnetState.usdcBalance = t.usdcBalance !== undefined ? t.usdcBalance : (t.totalAumUsdc || 0);
-              baseMainnetState.usdcFormatted = t.usdcBalanceFormatted || '$10,652.00 USDC';
-              baseMainnetState.totalShares = t.totalShares;
-              baseMainnetState.totalAumUsdc = t.totalAumUsdc;
-              baseMainnetState.navBps = t.navBps;
+              baseMainnetState.usdcFormatted = t.usdcBalanceFormatted || '$0.00 USDC';
+              baseMainnetState.totalShares = t.totalShares || 0;
+              baseMainnetState.totalAumUsdc = t.totalAumUsdc || 0;
+              baseMainnetState.navBps = t.navBps || 10600;
               baseMainnetState.contractAddress = t.vaultAddress;
               if (t.weights) baseMainnetState.weights = t.weights;
-              if (t.userShares !== undefined) {
-                PERSONAS.operator.sharesBase = t.userShares;
-              }
             }
           }
         } catch (e) {
@@ -1356,21 +1401,19 @@
         }
       } else if (activeNetwork === 'BASE_SEPOLIA') {
         try {
-          const res = await fetch(`/api/base/telemetry?address=${activeUserAddress}`);
+          const addrParam = (isWeb3Connected && activeUserAddress) ? `?address=${activeUserAddress}` : '';
+          const res = await fetch(`/api/base/telemetry${addrParam}`);
           if (res.ok) {
             const data = await res.json();
             if (data.success && data.telemetry) {
               const t = data.telemetry;
-              baseSepoliaState.ethBalance = t.ethBalance;
-              baseSepoliaState.ethFormatted = t.ethBalanceFormatted;
-              baseSepoliaState.totalShares = t.totalShares;
-              baseSepoliaState.totalAumUsdc = t.totalAumUsdc;
-              baseSepoliaState.navBps = t.navBps;
+              baseSepoliaState.ethBalance = t.ethBalance || 0;
+              baseSepoliaState.ethFormatted = t.ethBalanceFormatted || '0.001100 ETH';
+              baseSepoliaState.totalShares = t.totalShares || 2608489;
+              baseSepoliaState.totalAumUsdc = t.totalAumUsdc || 2.76;
+              baseSepoliaState.navBps = t.navBps || 10600;
               baseSepoliaState.contractAddress = t.vaultAddress;
               if (t.weights) baseSepoliaState.weights = t.weights;
-              if (t.userShares !== undefined) {
-                PERSONAS.operator.sharesBase = t.userShares;
-              }
             }
           }
         } catch (e) {
@@ -1413,7 +1456,9 @@
         }
       }
       renderUI();
-      loadInvestorPosition(activeUserAddress);
+      if (activeNetwork === 'GENLAYER_STUDIO' || isWeb3Connected) {
+        loadInvestorPosition(activeUserAddress);
+      }
     }
 
     // =========================================================================
@@ -1580,7 +1625,9 @@
         if (depPrefix) depPrefix.innerText = 'Ξ';
         if (depSuffix) depSuffix.innerText = 'ETH';
         if (depInput && (depInput.value === '100' || depInput.value === '500' || !depInput.value)) depInput.value = '0.001';
-        if (btnDepText) btnDepText.innerText = 'DEPOSIT ETH ON BASE SEPOLIA (METAMASK)';
+        if (btnDepText) {
+          btnDepText.innerText = (isWeb3Connected && activeUserAddress) ? 'DEPOSIT ETH ON BASE SEPOLIA (METAMASK)' : 'CONNECT WALLET TO DEPOSIT';
+        }
 
         if (presetsBox) {
           presetsBox.innerHTML = `
@@ -1595,14 +1642,18 @@
         if (withBadge) { withBadge.innerText = 'Base Sepolia (84532)'; withBadge.className = 'text-[10px] mono text-indigo-400 font-bold bg-indigo-950/60 px-2 py-0.5 rounded-lg border border-indigo-800'; }
         if (withInput && (withInput.value === '500' || !withInput.value)) withInput.value = '1';
         if (withPayoutLabel) withPayoutLabel.innerText = 'Estimated ETH Payout:';
-        if (btnWithText) btnWithText.innerText = 'WITHDRAW ETH ON BASE SEPOLIA (METAMASK)';
+        if (btnWithText) {
+          btnWithText.innerText = (isWeb3Connected && activeUserAddress) ? 'WITHDRAW ETH ON BASE SEPOLIA (METAMASK)' : 'CONNECT WALLET TO WITHDRAW';
+        }
       } else if (isMainnet) {
         if (depNotice) depNotice.innerText = 'Deposit Circle Native USDC on Coinbase Base Mainnet (Chain ID: 8453):';
         if (depBadge) { depBadge.innerText = 'Base Mainnet (8453)'; depBadge.className = 'text-[10px] mono text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded-lg border border-emerald-800'; }
         if (depPrefix) depPrefix.innerText = '$';
         if (depSuffix) depSuffix.innerText = 'USDC';
         if (depInput && (depInput.value === '0.001' || depInput.value === '0.0001' || !depInput.value)) depInput.value = '100';
-        if (btnDepText) btnDepText.innerText = 'DEPOSIT USDC ON BASE MAINNET (METAMASK)';
+        if (btnDepText) {
+          btnDepText.innerText = (isWeb3Connected && activeUserAddress) ? 'DEPOSIT USDC ON BASE MAINNET (METAMASK)' : 'CONNECT WALLET TO DEPOSIT';
+        }
 
         if (presetsBox) {
           presetsBox.innerHTML = `
@@ -1617,7 +1668,9 @@
         if (withBadge) { withBadge.innerText = 'Base Mainnet (8453)'; withBadge.className = 'text-[10px] mono text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded-lg border border-emerald-800'; }
         if (withInput && (withInput.value === '1' || !withInput.value)) withInput.value = '100';
         if (withPayoutLabel) withPayoutLabel.innerText = 'Estimated USDC Payout:';
-        if (btnWithText) btnWithText.innerText = 'REDEEM USDC ON BASE MAINNET (METAMASK)';
+        if (btnWithText) {
+          btnWithText.innerText = (isWeb3Connected && activeUserAddress) ? 'REDEEM USDC ON BASE MAINNET (METAMASK)' : 'CONNECT WALLET TO WITHDRAW';
+        }
       } else {
         if (depNotice) depNotice.innerText = 'Deposit USDC collateral into AlphaTank Intelligent Contract on GenLayer Studio:';
         if (depBadge) { depBadge.innerText = 'GenLayer Studio'; depBadge.className = 'text-[10px] mono text-cyan-400 font-bold bg-cyan-950/60 px-2 py-0.5 rounded-lg border border-cyan-800'; }
@@ -1683,35 +1736,23 @@
       const isBase = activeNetwork === 'BASE_SEPOLIA';
       const isMainnet = activeNetwork === 'BASE_MAINNET';
 
-      if (isBase) {
-        let shares = 0;
-        if (address.toLowerCase() === PERSONAS.operator.address.toLowerCase()) {
-          shares = baseSepoliaState.totalShares;
-        } else {
-          try {
-            const res = await fetch(`/api/base/telemetry?address=${address}`);
-            if (res.ok) {
-              const d = await res.json();
-              if (d.success && d.telemetry) {
-                shares = d.telemetry.userShares || 0;
-              }
-            }
-          } catch(e) {}
+      if (isBase || isMainnet) {
+        if (!isWeb3Connected || !address) {
+          updateInvestorUI({
+            shares_held: 0,
+            current_value_usdc: 0,
+            deposited_usdc: 0,
+            unrealized_pnl_usdc: 0
+          });
+          const invDisp = document.getElementById('investorAddressDisplay');
+          if (invDisp) invDisp.innerText = 'Wallet Not Connected';
+          return;
         }
-        const currentVal = shares * 1.0;
-        updateInvestorUI({
-          shares_held: shares,
-          current_value_usdc: currentVal,
-          deposited_usdc: currentVal,
-          unrealized_pnl_usdc: 0
-        });
-        return;
-      }
 
-      if (isMainnet) {
         let shares = 0;
+        const endpoint = isMainnet ? `/api/base-mainnet/telemetry?address=${address}` : `/api/base/telemetry?address=${address}`;
         try {
-          const res = await fetch(`/api/base-mainnet/telemetry?address=${address}`);
+          const res = await fetch(endpoint);
           if (res.ok) {
             const d = await res.json();
             if (d.success && d.telemetry) {
@@ -1719,10 +1760,9 @@
             }
           }
         } catch(e) {}
-        if (shares === 0 && address.toLowerCase() === PERSONAS.operator.address.toLowerCase()) {
-          shares = baseMainnetState.totalShares;
-        }
-        const navDollars = (baseMainnetState.navBps || 10600) / 10000;
+
+        const st = getActiveState();
+        const navDollars = (st.navBps || 10600) / 10000;
         const currentVal = shares * navDollars;
         const deposited = shares * 1.0;
         const pnl = currentVal - deposited;
@@ -1732,23 +1772,28 @@
           deposited_usdc: deposited,
           unrealized_pnl_usdc: pnl
         });
+        const invDisp = document.getElementById('investorAddressDisplay');
+        if (invDisp) invDisp.innerText = formatAddress(address) + ' (MetaMask)';
         return;
       }
 
       // GenLayer Studio route
+      const p = PERSONAS[activePersonaKey] || PERSONAS.alice;
+      const targetAddr = address || p.address;
       try {
-        const res = await fetch(`/api/investor/${address}`);
+        const res = await fetch(`/api/investor/${targetAddr}`);
         if (res.ok) {
           const data = await res.json();
           if (data && data.position) {
             updateInvestorUI(data.position);
+            const invDisp = document.getElementById('investorAddressDisplay');
+            if (invDisp) invDisp.innerText = `${formatAddress(targetAddr)} (${p.name})`;
             return;
           }
         }
       } catch (e) {}
 
       // Fallback based on persona
-      const p = PERSONAS[activePersonaKey] || PERSONAS.alice;
       const currentVal = (p.sharesGenLayer * genlayerState.navBps) / 10000;
       const pnl = currentVal - p.deposited;
       updateInvestorUI({
@@ -1757,6 +1802,8 @@
         deposited_usdc: p.deposited,
         unrealized_pnl_usdc: pnl
       });
+      const invDisp = document.getElementById('investorAddressDisplay');
+      if (invDisp) invDisp.innerText = `${formatAddress(p.address)} (${p.name})`;
     }
 
     function updateInvestorUI(pos) {
@@ -1804,36 +1851,147 @@
     // =========================================================================
     // WEB3 WALLET & PERSONA CONTROLS
     // =========================================================================
-    async function connectWeb3Wallet() {
-      if (window.ethereum) {
-        try {
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          if (accounts && accounts.length > 0) {
-            activeUserAddress = accounts[0].toLowerCase();
-            isWeb3Connected = true;
-            document.getElementById('walletBtnText').innerText = formatAddress(activeUserAddress);
-            document.getElementById('investorAddressDisplay').innerText = formatAddress(activeUserAddress) + ' (MetaMask)';
+    function handleWalletButtonClick() {
+      connectWeb3Wallet(false);
+    }
 
-            const targetChainId = activeNetwork === 'BASE_MAINNET' ? '0x2105' : '0x14a34';
-            try {
-              await window.ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: targetChainId }]
-              });
-            } catch (err) {}
-
-            await loadInvestorPosition(activeUserAddress);
+    async function connectWeb3Wallet(forceAccountSelect = false) {
+      if (!window.ethereum) {
+        alert('No Web3 wallet detected. Please install MetaMask or a Web3 compatible browser extension.');
+        return;
+      }
+      try {
+        let accounts = [];
+        if (forceAccountSelect) {
+          // Explicitly open account selector in MetaMask
+          try {
+            const permissions = await window.ethereum.request({
+              method: 'wallet_requestPermissions',
+              params: [{ eth_accounts: {} }]
+            });
+            const accPermission = permissions.find(p => p.parentCapability === 'eth_accounts');
+            if (accPermission) {
+              accounts = await window.ethereum.request({ method: 'eth_accounts' });
+            }
+          } catch (permErr) {
+            console.warn('Account selector dismissed:', permErr.message);
             return;
           }
-        } catch (e) {
-          console.warn('MetaMask connect notice:', e.message);
+        } else {
+          accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        }
+
+        if (accounts && accounts.length > 0) {
+          activeUserAddress = accounts[0].toLowerCase();
+          isWeb3Connected = true;
+
+          const targetChainId = activeNetwork === 'BASE_MAINNET' ? '0x2105' : '0x14a34';
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: targetChainId }]
+            });
+          } catch (switchErr) {
+            if (switchErr.code === 4902) {
+              const chainParams = activeNetwork === 'BASE_MAINNET' ? {
+                chainId: '0x2105',
+                chainName: 'Base Mainnet',
+                nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                rpcUrls: ['https://mainnet.base.org'],
+                blockExplorerUrls: ['https://basescan.org']
+              } : {
+                chainId: '0x14a34',
+                chainName: 'Base Sepolia Testnet',
+                nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                rpcUrls: ['https://sepolia.base.org'],
+                blockExplorerUrls: ['https://sepolia.basescan.org']
+              };
+              try {
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [chainParams]
+                });
+              } catch (addErr) {}
+            }
+          }
+
+          updateWalletUI();
+          await loadInvestorPosition(activeUserAddress);
+          await loadNetworkTelemetry();
+        }
+      } catch (e) {
+        console.warn('Wallet connection error:', e.message);
+      }
+    }
+
+    function updateWalletUI() {
+      const btn = document.getElementById('btnConnectWallet');
+      const pill = document.getElementById('walletConnectedPill');
+      const pillAddr = document.getElementById('walletPillAddress');
+      const fullAddr = document.getElementById('walletFullAddress');
+      const netBadge = document.getElementById('walletNetworkBadge');
+      const expLink = document.getElementById('walletExplorerLink');
+      const invDisp = document.getElementById('investorAddressDisplay');
+
+      if (isWeb3Connected && activeUserAddress) {
+        if (btn) btn.classList.add('hidden');
+        if (pill) pill.classList.remove('hidden');
+        if (pillAddr) pillAddr.innerText = formatAddress(activeUserAddress);
+        if (fullAddr) fullAddr.innerText = activeUserAddress;
+        if (netBadge) {
+          netBadge.innerText = activeNetwork === 'BASE_MAINNET' ? 'Base Mainnet (8453)' : 'Base Sepolia (84532)';
+          netBadge.className = activeNetwork === 'BASE_MAINNET' 
+            ? 'text-[10px] mono px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold'
+            : 'text-[10px] mono px-2 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800 font-bold';
+        }
+        if (expLink) {
+          expLink.href = activeNetwork === 'BASE_MAINNET'
+            ? `https://basescan.org/address/${activeUserAddress}`
+            : `https://sepolia.basescan.org/address/${activeUserAddress}`;
+        }
+        if (invDisp) invDisp.innerText = formatAddress(activeUserAddress) + ' (MetaMask)';
+      } else {
+        if (btn) btn.classList.remove('hidden');
+        if (pill) pill.classList.add('hidden');
+        closeWalletDropdown();
+        if (invDisp && activeNetwork !== 'GENLAYER_STUDIO') {
+          invDisp.innerText = 'Wallet Not Connected';
         }
       }
-      isWeb3Connected = true;
-      const p = PERSONAS[activePersonaKey];
-      document.getElementById('walletBtnText').innerText = formatAddress(p.address);
-      document.getElementById('investorAddressDisplay').innerText = `${formatAddress(p.address)} (${p.name})`;
-      await loadInvestorPosition(p.address);
+
+      updateChainUI();
+      lucide.createIcons();
+    }
+
+    function toggleWalletDropdown(event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById('walletDropdownMenu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    function closeWalletDropdown() {
+      const menu = document.getElementById('walletDropdownMenu');
+      if (menu) menu.classList.add('hidden');
+    }
+
+    function switchWeb3Account() {
+      closeWalletDropdown();
+      connectWeb3Wallet(true);
+    }
+
+    function disconnectWeb3Wallet() {
+      isWeb3Connected = false;
+      activeUserAddress = null;
+      closeWalletDropdown();
+      updateWalletUI();
+      loadInvestorPosition(null);
+    }
+
+    function copyWalletAddress() {
+      if (activeUserAddress && navigator.clipboard) {
+        navigator.clipboard.writeText(activeUserAddress);
+        alert('Wallet address copied to clipboard: ' + activeUserAddress);
+      }
     }
 
     function switchPersona(key) {
@@ -1841,9 +1999,6 @@
       const p = PERSONAS[key];
       activeUserAddress = p.address;
       document.getElementById('investorAddressDisplay').innerText = `${formatAddress(p.address)} (${p.name})`;
-      if (isWeb3Connected) {
-        document.getElementById('walletBtnText').innerText = formatAddress(p.address);
-      }
       loadInvestorPosition(p.address);
     }
 
@@ -1865,6 +2020,19 @@
 
       const btn = document.getElementById('btnDepositSubmit') || event.currentTarget;
       const oldHtml = btn.innerHTML;
+
+      // ENFORCE REAL WALLET CONNECTION ON BASE NETWORKS (NO FAKE SIMULATIONS)
+      if (activeNetwork === 'BASE_SEPOLIA' || activeNetwork === 'BASE_MAINNET') {
+        if (!window.ethereum) {
+          alert('MetaMask or a Web3 wallet is required to deposit on Base networks. Please install MetaMask to proceed.');
+          return;
+        }
+        if (!isWeb3Connected || !activeUserAddress) {
+          await connectWeb3Wallet(false);
+          return;
+        }
+      }
+
       btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> BROADCASTING ON-CHAIN TX...';
       btn.disabled = true;
 
@@ -1873,95 +2041,67 @@
         const vaultAddr = NETWORKS.BASE_SEPOLIA.contractAddress;
         const ethVal = amount;
 
-        if (window.ethereum) {
-          try {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const userAddr = accounts[0];
-
-            try {
-              await window.ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: '0x14a34' }]
-              });
-            } catch (switchErr) {
-              if (switchErr.code === 4902) {
-                await window.ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                  params: [{
-                    chainId: '0x14a34',
-                    chainName: 'Base Sepolia Testnet',
-                    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-                    rpcUrls: ['https://sepolia.base.org'],
-                    blockExplorerUrls: ['https://sepolia.basescan.org']
-                  }]
-                });
-              }
-            }
-
-            const weiVal = BigInt(Math.max(1, Math.floor(ethVal * 1e18)));
-            const weiHex = '0x' + weiVal.toString(16);
-
-            // depositETH() -> selector 0xf6326fb3
-            const txHash = await window.ethereum.request({
-              method: 'eth_sendTransaction',
-              params: [{
-                from: userAddr,
-                to: vaultAddr,
-                value: weiHex,
-                data: '0xf6326fb3'
-              }]
-            });
-
-            btn.innerHTML = oldHtml;
-            btn.disabled = false;
-            showTxModal(
-              'BASE SEPOLIA DEPOSIT BROADCASTED!',
-              txHash,
-              `Successfully deposited ${ethVal} ETH (~$${(ethVal * 2500).toFixed(2)} USDC collateral) into AlphaTank Vault on Base Sepolia.`,
-              `https://sepolia.basescan.org/tx/${txHash}`,
-              'VIEW ON BASESCAN (L2)'
-            );
-            addAuditLogRow('BASE_DEPOSIT', txHash, 'Base Sepolia L2', `Deposited ${ethVal} ETH -> Minted ATK Shares`, '$1.0000', 'CONFIRMED (L2)');
-            await loadNetworkTelemetry();
-            return;
-          } catch (metamaskErr) {
-            console.warn('MetaMask error / rejection:', metamaskErr.message);
-            if (metamaskErr.code === 4001) {
-              alert('Transaction cancelled in MetaMask.');
-              btn.innerHTML = oldHtml;
-              btn.disabled = false;
-              return;
-            }
-          }
-        }
-
-        // Programmatic Fallback via backend RPC
         try {
-          const res = await fetch('/api/base/deposit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amountEth: ethVal })
-          });
-          if (res.ok) {
-            const result = await res.json();
-            btn.innerHTML = oldHtml;
-            btn.disabled = false;
-            showTxModal(
-              'BASE SEPOLIA ON-CHAIN DEPOSIT FINALIZED',
-              result.txHash,
-              `Deposited ${ethVal} ETH into AlphaTank Vault on Base Sepolia.`,
-              result.basescan,
-              'VIEW ON BASESCAN (L2)'
-            );
-            addAuditLogRow('BASE_DEPOSIT', result.txHash, 'Base Sepolia L2', `Deposited ${ethVal} ETH -> Minted ATK Shares`, '$1.0000', 'CONFIRMED (L2)');
-            await loadNetworkTelemetry();
-            return;
-          }
-        } catch (e) {}
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const userAddr = accounts[0];
 
-        btn.innerHTML = oldHtml;
-        btn.disabled = false;
-        return;
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x14a34' }]
+            });
+          } catch (switchErr) {
+            if (switchErr.code === 4902) {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: '0x14a34',
+                  chainName: 'Base Sepolia Testnet',
+                  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                  rpcUrls: ['https://sepolia.base.org'],
+                  blockExplorerUrls: ['https://sepolia.basescan.org']
+                }]
+              });
+            }
+          }
+
+          const weiVal = BigInt(Math.max(1, Math.floor(ethVal * 1e18)));
+          const weiHex = '0x' + weiVal.toString(16);
+
+          // depositETH() -> selector 0xf6326fb3
+          const txHash = await window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+              from: userAddr,
+              to: vaultAddr,
+              value: weiHex,
+              data: '0xf6326fb3'
+            }]
+          });
+
+          btn.innerHTML = oldHtml;
+          btn.disabled = false;
+          showTxModal(
+            'BASE SEPOLIA DEPOSIT BROADCASTED!',
+            txHash,
+            `Successfully deposited ${ethVal} ETH into AlphaTank Vault on Base Sepolia.`,
+            `https://sepolia.basescan.org/tx/${txHash}`,
+            'VIEW ON BASESCAN (L2)'
+          );
+          addAuditLogRow('BASE_DEPOSIT', txHash, 'Base Sepolia L2', `Deposited ${ethVal} ETH -> Minted ATK Shares`, '$1.0000', 'CONFIRMED (L2)');
+          await loadNetworkTelemetry();
+          return;
+        } catch (metamaskErr) {
+          console.warn('MetaMask error / rejection:', metamaskErr.message);
+          if (metamaskErr.code === 4001) {
+            alert('Transaction cancelled in MetaMask.');
+          } else {
+            alert('Transaction error: ' + metamaskErr.message);
+          }
+          btn.innerHTML = oldHtml;
+          btn.disabled = false;
+          return;
+        }
       }
 
       // ROUTE 2: BASE MAINNET (Live EVM Smart Contract on Base Mainnet with Native USDC)
@@ -1970,131 +2110,103 @@
         const usdcAddr = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
         const usdcVal = amount;
 
-        if (window.ethereum) {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const userAddr = accounts[0];
+
           try {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const userAddr = accounts[0];
-
-            try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x2105' }]
+            });
+          } catch (switchErr) {
+            if (switchErr.code === 4902) {
               await window.ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: '0x2105' }]
-              });
-            } catch (switchErr) {
-              if (switchErr.code === 4902) {
-                await window.ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                  params: [{
-                    chainId: '0x2105',
-                    chainName: 'Base Mainnet',
-                    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-                    rpcUrls: ['https://mainnet.base.org'],
-                    blockExplorerUrls: ['https://basescan.org']
-                  }]
-                });
-              }
-            }
-
-            const usdcUnits = BigInt(Math.max(1, Math.floor(usdcVal * 1e6)));
-            const usdcUnitsHex = usdcUnits.toString(16).padStart(64, '0');
-            const cleanUser = userAddr.toLowerCase().replace('0x', '').padStart(64, '0');
-            const cleanVault = vaultAddr.toLowerCase().replace('0x', '').padStart(64, '0');
-
-            // 1. Check allowance
-            btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> CHECKING USDC ALLOWANCE...';
-            const allowanceCallData = '0xdd62ed3e' + cleanUser + cleanVault;
-            let currentAllowance = 0n;
-            try {
-              const allowanceHex = await window.ethereum.request({
-                method: 'eth_call',
-                params: [{ to: usdcAddr, data: allowanceCallData }, 'latest']
-              });
-              if (allowanceHex && allowanceHex !== '0x') {
-                currentAllowance = BigInt(allowanceHex);
-              }
-            } catch (allowErr) {
-              console.warn('Could not read allowance via eth_call:', allowErr);
-            }
-
-            // 2. If allowance < usdcUnits, request ERC-20 approval
-            if (currentAllowance < usdcUnits) {
-              btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> APPROVING USDC IN METAMASK...';
-              const maxApproval = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-              const approveData = '0x095ea7b3' + cleanVault + maxApproval;
-              await window.ethereum.request({
-                method: 'eth_sendTransaction',
+                method: 'wallet_addEthereumChain',
                 params: [{
-                  from: userAddr,
-                  to: usdcAddr,
-                  data: approveData
+                  chainId: '0x2105',
+                  chainName: 'Base Mainnet',
+                  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                  rpcUrls: ['https://mainnet.base.org'],
+                  blockExplorerUrls: ['https://basescan.org']
                 }]
               });
             }
+          }
 
-            // 3. Call AlphaTankVault.deposit(uint256 usdcAmount) -> selector 0xb6b55f25
-            btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> BROADCASTING VAULT DEPOSIT...';
-            const depositData = '0xb6b55f25' + usdcUnitsHex;
+          const usdcUnits = BigInt(Math.max(1, Math.floor(usdcVal * 1e6)));
+          const usdcUnitsHex = usdcUnits.toString(16).padStart(64, '0');
+          const cleanUser = userAddr.toLowerCase().replace('0x', '').padStart(64, '0');
+          const cleanVault = vaultAddr.toLowerCase().replace('0x', '').padStart(64, '0');
 
-            const txHash = await window.ethereum.request({
+          // 1. Check allowance
+          btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> CHECKING USDC ALLOWANCE...';
+          const allowanceCallData = '0xdd62ed3e' + cleanUser + cleanVault;
+          let currentAllowance = 0n;
+          try {
+            const allowanceHex = await window.ethereum.request({
+              method: 'eth_call',
+              params: [{ to: usdcAddr, data: allowanceCallData }, 'latest']
+            });
+            if (allowanceHex && allowanceHex !== '0x') {
+              currentAllowance = BigInt(allowanceHex);
+            }
+          } catch (allowErr) {
+            console.warn('Could not read allowance via eth_call:', allowErr);
+          }
+
+          // 2. If allowance < usdcUnits, request ERC-20 approval
+          if (currentAllowance < usdcUnits) {
+            btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> APPROVING USDC IN METAMASK...';
+            const maxApproval = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+            const approveData = '0x095ea7b3' + cleanVault + maxApproval;
+            await window.ethereum.request({
               method: 'eth_sendTransaction',
               params: [{
                 from: userAddr,
-                to: vaultAddr,
-                data: depositData
+                to: usdcAddr,
+                data: approveData
               }]
             });
-
-            btn.innerHTML = oldHtml;
-            btn.disabled = false;
-            showTxModal(
-              'BASE MAINNET USDC DEPOSIT BROADCASTED!',
-              txHash,
-              `Successfully deposited $${usdcVal.toFixed(2)} native USDC into AlphaTank Vault on Base Mainnet (${vaultAddr}).`,
-              `https://basescan.org/tx/${txHash}`,
-              'VIEW ON BASESCAN (MAINNET)'
-            );
-            const navDollarsStr = (baseMainnetState.navBps / 10000).toFixed(4);
-            addAuditLogRow('MAINNET_DEPOSIT', txHash, 'Base Mainnet L2', `Deposited $${usdcVal.toFixed(2)} USDC -> Minted ATK Shares`, '$' + navDollarsStr, 'CONFIRMED (L2)');
-            await loadNetworkTelemetry();
-            return;
-          } catch (metamaskErr) {
-            console.warn('MetaMask error / rejection:', metamaskErr.message);
-            if (metamaskErr.code === 4001) {
-              alert('Transaction cancelled in MetaMask.');
-              btn.innerHTML = oldHtml;
-              btn.disabled = false;
-              return;
-            }
           }
-        }
 
-        // Programmatic Fallback via backend RPC
-        try {
-          const res = await fetch('/api/base-mainnet/deposit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amountUsdc: usdcVal })
+          // 3. Call AlphaTankVault.deposit(uint256 usdcAmount) -> selector 0xb6b55f25
+          btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> BROADCASTING VAULT DEPOSIT...';
+          const depositData = '0xb6b55f25' + usdcUnitsHex;
+
+          const txHash = await window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+              from: userAddr,
+              to: vaultAddr,
+              data: depositData
+            }]
           });
-          if (res.ok) {
-            const result = await res.json();
-            btn.innerHTML = oldHtml;
-            btn.disabled = false;
-            showTxModal(
-              'BASE MAINNET ON-CHAIN DEPOSIT FINALIZED',
-              result.txHash,
-              `Deposited $${usdcVal.toFixed(2)} USDC into AlphaTank Vault on Base Mainnet.`,
-              result.basescan,
-              'VIEW ON BASESCAN (MAINNET)'
-            );
-            addAuditLogRow('MAINNET_DEPOSIT', result.txHash, 'Base Mainnet L2', `Deposited $${usdcVal.toFixed(2)} USDC -> Minted ATK Shares`, '$1.0600', 'CONFIRMED (L2)');
-            await loadNetworkTelemetry();
-            return;
-          }
-        } catch (e) {}
 
-        btn.innerHTML = oldHtml;
-        btn.disabled = false;
-        return;
+          btn.innerHTML = oldHtml;
+          btn.disabled = false;
+          showTxModal(
+            'BASE MAINNET USDC DEPOSIT BROADCASTED!',
+            txHash,
+            `Successfully deposited $${usdcVal.toFixed(2)} native USDC into AlphaTank Vault on Base Mainnet (${vaultAddr}).`,
+            `https://basescan.org/tx/${txHash}`,
+            'VIEW ON BASESCAN (MAINNET)'
+          );
+          const navDollarsStr = (baseMainnetState.navBps / 10000).toFixed(4);
+          addAuditLogRow('MAINNET_DEPOSIT', txHash, 'Base Mainnet L2', `Deposited $${usdcVal.toFixed(2)} USDC -> Minted ATK Shares`, '$' + navDollarsStr, 'CONFIRMED (L2)');
+          await loadNetworkTelemetry();
+          return;
+        } catch (metamaskErr) {
+          console.warn('MetaMask error / rejection:', metamaskErr.message);
+          if (metamaskErr.code === 4001) {
+            alert('Transaction cancelled in MetaMask.');
+          } else {
+            alert('Transaction error: ' + metamaskErr.message);
+          }
+          btn.innerHTML = oldHtml;
+          btn.disabled = false;
+          return;
+        }
       }
 
       // ROUTE 3: GENLAYER STUDIO
@@ -2150,6 +2262,19 @@
 
       const btn = document.getElementById('btnWithdrawSubmit') || event.currentTarget;
       const oldHtml = btn.innerHTML;
+
+      // ENFORCE REAL WALLET CONNECTION ON BASE NETWORKS (NO FAKE SIMULATIONS)
+      if (activeNetwork === 'BASE_SEPOLIA' || activeNetwork === 'BASE_MAINNET') {
+        if (!window.ethereum) {
+          alert('MetaMask or a Web3 wallet is required to withdraw on Base networks. Please install MetaMask to proceed.');
+          return;
+        }
+        if (!isWeb3Connected || !activeUserAddress) {
+          await connectWeb3Wallet(false);
+          return;
+        }
+      }
+
       btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> BROADCASTING ON-CHAIN TX...';
       btn.disabled = true;
 
@@ -2157,190 +2282,134 @@
       if (activeNetwork === 'BASE_SEPOLIA') {
         const vaultAddr = NETWORKS.BASE_SEPOLIA.contractAddress;
 
-        if (window.ethereum) {
-          try {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const userAddr = accounts[0];
-
-            try {
-              await window.ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: '0x14a34' }]
-              });
-            } catch (switchErr) {
-              if (switchErr.code === 4902) {
-                await window.ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                  params: [{
-                    chainId: '0x14a34',
-                    chainName: 'Base Sepolia Testnet',
-                    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-                    rpcUrls: ['https://sepolia.base.org'],
-                    blockExplorerUrls: ['https://sepolia.basescan.org']
-                  }]
-                });
-              }
-            }
-
-            // withdrawETH(uint256) selector: 0xf14210a6
-            const sharesHex = BigInt(sharesToBurn).toString(16).padStart(64, '0');
-            const txData = '0xf14210a6' + sharesHex;
-
-            const txHash = await window.ethereum.request({
-              method: 'eth_sendTransaction',
-              params: [{
-                from: userAddr,
-                to: vaultAddr,
-                data: txData
-              }]
-            });
-
-            btn.innerHTML = oldHtml;
-            btn.disabled = false;
-            showTxModal(
-              'BASE SEPOLIA WITHDRAWAL BROADCASTED!',
-              txHash,
-              `Redeemed ${sharesToBurn} ATK shares for native ETH on Base Sepolia Vault at ${vaultAddr}.`,
-              `https://sepolia.basescan.org/tx/${txHash}`,
-              'VIEW ON BASESCAN (L2)'
-            );
-            addAuditLogRow('BASE_WITHDRAW', txHash, 'Base Sepolia L2', `Redeemed ${sharesToBurn} ATK -> Paid Native ETH`, '$1.0000', 'CONFIRMED (L2)');
-            await loadNetworkTelemetry();
-            return;
-          } catch (metamaskErr) {
-            console.warn('MetaMask withdraw error:', metamaskErr.message);
-            if (metamaskErr.code === 4001) {
-              alert('Transaction cancelled in MetaMask.');
-              btn.innerHTML = oldHtml;
-              btn.disabled = false;
-              return;
-            }
-          }
-        }
-
-        // Programmatic Fallback via backend RPC
         try {
-          const res = await fetch('/api/base/withdraw', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ shares: sharesToBurn })
-          });
-          if (res.ok) {
-            const result = await res.json();
-            btn.innerHTML = oldHtml;
-            btn.disabled = false;
-            showTxModal(
-              'BASE SEPOLIA ON-CHAIN WITHDRAWAL FINALIZED',
-              result.txHash,
-              `Redeemed ${sharesToBurn} ATK shares for native ETH on Base Sepolia.`,
-              result.basescan,
-              'VIEW ON BASESCAN (L2)'
-            );
-            addAuditLogRow('BASE_WITHDRAW', result.txHash, 'Base Sepolia L2', `Redeemed ${sharesToBurn} ATK -> Paid Native ETH`, '$1.0000', 'CONFIRMED (L2)');
-            await loadNetworkTelemetry();
-            return;
-          }
-        } catch (e) {}
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const userAddr = accounts[0];
 
-        btn.innerHTML = oldHtml;
-        btn.disabled = false;
-        return;
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x14a34' }]
+            });
+          } catch (switchErr) {
+            if (switchErr.code === 4902) {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: '0x14a34',
+                  chainName: 'Base Sepolia Testnet',
+                  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                  rpcUrls: ['https://sepolia.base.org'],
+                  blockExplorerUrls: ['https://sepolia.basescan.org']
+                }]
+              });
+            }
+          }
+
+          // withdrawETH(uint256) selector: 0xf14210a6
+          const sharesHex = BigInt(sharesToBurn).toString(16).padStart(64, '0');
+          const txData = '0xf14210a6' + sharesHex;
+
+          const txHash = await window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+              from: userAddr,
+              to: vaultAddr,
+              data: txData
+            }]
+          });
+
+          btn.innerHTML = oldHtml;
+          btn.disabled = false;
+          showTxModal(
+            'BASE SEPOLIA WITHDRAWAL BROADCASTED!',
+            txHash,
+            `Redeemed ${sharesToBurn} ATK shares for native ETH on Base Sepolia Vault at ${vaultAddr}.`,
+            `https://sepolia.basescan.org/tx/${txHash}`,
+            'VIEW ON BASESCAN (L2)'
+          );
+          addAuditLogRow('BASE_WITHDRAW', txHash, 'Base Sepolia L2', `Redeemed ${sharesToBurn} ATK -> Paid Native ETH`, '$1.0000', 'CONFIRMED (L2)');
+          await loadNetworkTelemetry();
+          return;
+        } catch (metamaskErr) {
+          console.warn('MetaMask withdraw error:', metamaskErr.message);
+          if (metamaskErr.code === 4001) {
+            alert('Transaction cancelled in MetaMask.');
+          } else {
+            alert('Transaction error: ' + metamaskErr.message);
+          }
+          btn.innerHTML = oldHtml;
+          btn.disabled = false;
+          return;
+        }
       }
 
       // ROUTE 2: BASE MAINNET (Live EVM Smart Contract on Base Mainnet with Native USDC)
       if (activeNetwork === 'BASE_MAINNET') {
         const vaultAddr = NETWORKS.BASE_MAINNET.contractAddress;
 
-        if (window.ethereum) {
-          try {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const userAddr = accounts[0];
-
-            try {
-              await window.ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: '0x2105' }]
-              });
-            } catch (switchErr) {
-              if (switchErr.code === 4902) {
-                await window.ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                  params: [{
-                    chainId: '0x2105',
-                    chainName: 'Base Mainnet',
-                    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-                    rpcUrls: ['https://mainnet.base.org'],
-                    blockExplorerUrls: ['https://basescan.org']
-                  }]
-                });
-              }
-            }
-
-            // withdraw(uint256 sharesToBurn) selector: 0x2e1a7d4d
-            const sharesUnits = BigInt(Math.max(1, Math.floor(sharesToBurn * 1e6)));
-            const sharesHex = sharesUnits.toString(16).padStart(64, '0');
-            const txData = '0x2e1a7d4d' + sharesHex;
-
-            const txHash = await window.ethereum.request({
-              method: 'eth_sendTransaction',
-              params: [{
-                from: userAddr,
-                to: vaultAddr,
-                data: txData
-              }]
-            });
-
-            btn.innerHTML = oldHtml;
-            btn.disabled = false;
-            showTxModal(
-              'BASE MAINNET USDC WITHDRAWAL BROADCASTED!',
-              txHash,
-              `Redeemed ${sharesToBurn} ATK shares for proportional native USDC on Base Mainnet Vault at ${vaultAddr}.`,
-              `https://basescan.org/tx/${txHash}`,
-              'VIEW ON BASESCAN (MAINNET)'
-            );
-            const navDollarsStr = (baseMainnetState.navBps / 10000).toFixed(4);
-            addAuditLogRow('MAINNET_WITHDRAW', txHash, 'Base Mainnet L2', `Redeemed ${sharesToBurn} ATK -> Paid Native USDC`, '$' + navDollarsStr, 'CONFIRMED (L2)');
-            await loadNetworkTelemetry();
-            return;
-          } catch (metamaskErr) {
-            console.warn('MetaMask withdraw error:', metamaskErr.message);
-            if (metamaskErr.code === 4001) {
-              alert('Transaction cancelled in MetaMask.');
-              btn.innerHTML = oldHtml;
-              btn.disabled = false;
-              return;
-            }
-          }
-        }
-
-        // Programmatic Fallback via backend RPC
         try {
-          const res = await fetch('/api/base-mainnet/withdraw', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ shares: sharesToBurn })
-          });
-          if (res.ok) {
-            const result = await res.json();
-            btn.innerHTML = oldHtml;
-            btn.disabled = false;
-            showTxModal(
-              'BASE MAINNET ON-CHAIN WITHDRAWAL FINALIZED',
-              result.txHash,
-              `Redeemed ${sharesToBurn} ATK shares for native USDC on Base Mainnet.`,
-              result.basescan,
-              'VIEW ON BASESCAN (MAINNET)'
-            );
-            addAuditLogRow('MAINNET_WITHDRAW', result.txHash, 'Base Mainnet L2', `Redeemed ${sharesToBurn} ATK -> Paid Native USDC`, '$1.0600', 'CONFIRMED (L2)');
-            await loadNetworkTelemetry();
-            return;
-          }
-        } catch (e) {}
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const userAddr = accounts[0];
 
-        btn.innerHTML = oldHtml;
-        btn.disabled = false;
-        return;
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x2105' }]
+            });
+          } catch (switchErr) {
+            if (switchErr.code === 4902) {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: '0x2105',
+                  chainName: 'Base Mainnet',
+                  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                  rpcUrls: ['https://mainnet.base.org'],
+                  blockExplorerUrls: ['https://basescan.org']
+                }]
+              });
+            }
+          }
+
+          // withdraw(uint256 sharesToBurn) selector: 0x2e1a7d4d
+          const sharesUnits = BigInt(Math.max(1, Math.floor(sharesToBurn * 1e6)));
+          const sharesHex = sharesUnits.toString(16).padStart(64, '0');
+          const txData = '0x2e1a7d4d' + sharesHex;
+
+          const txHash = await window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+              from: userAddr,
+              to: vaultAddr,
+              data: txData
+            }]
+          });
+
+          btn.innerHTML = oldHtml;
+          btn.disabled = false;
+          showTxModal(
+            'BASE MAINNET USDC WITHDRAWAL BROADCASTED!',
+            txHash,
+            `Redeemed ${sharesToBurn} ATK shares for proportional native USDC on Base Mainnet Vault at ${vaultAddr}.`,
+            `https://basescan.org/tx/${txHash}`,
+            'VIEW ON BASESCAN (MAINNET)'
+          );
+          const navDollarsStr = (baseMainnetState.navBps / 10000).toFixed(4);
+          addAuditLogRow('MAINNET_WITHDRAW', txHash, 'Base Mainnet L2', `Redeemed ${sharesToBurn} ATK -> Paid Native USDC`, '$' + navDollarsStr, 'CONFIRMED (L2)');
+          await loadNetworkTelemetry();
+          return;
+        } catch (metamaskErr) {
+          console.warn('MetaMask withdraw error:', metamaskErr.message);
+          if (metamaskErr.code === 4001) {
+            alert('Transaction cancelled in MetaMask.');
+          } else {
+            alert('Transaction error: ' + metamaskErr.message);
+          }
+          btn.innerHTML = oldHtml;
+          btn.disabled = false;
+          return;
+        }
       }
 
       // ROUTE 3: GENLAYER STUDIO
@@ -2759,6 +2828,32 @@
       
       selectNetworkDashboard(defaultNet, false);
       initNavChart();
+
+      // Listen for click outside wallet dropdown to auto-close
+      document.addEventListener('click', (e) => {
+        const pill = document.getElementById('walletConnectedPill');
+        if (pill && !pill.contains(e.target)) {
+          closeWalletDropdown();
+        }
+      });
+
+      // Listen for MetaMask account and chain changes
+      if (window.ethereum) {
+        window.ethereum.on('accountsChanged', (accounts) => {
+          if (!accounts || accounts.length === 0) {
+            disconnectWeb3Wallet();
+          } else {
+            activeUserAddress = accounts[0].toLowerCase();
+            isWeb3Connected = true;
+            updateWalletUI();
+            loadInvestorPosition(activeUserAddress);
+            loadNetworkTelemetry();
+          }
+        });
+        window.ethereum.on('chainChanged', () => {
+          loadNetworkTelemetry();
+        });
+      }
 
       // Check if user has seen network onboarding modal
       const hasChosen = localStorage.getItem('alphatank_network_chosen');
