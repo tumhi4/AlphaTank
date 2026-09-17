@@ -219,9 +219,9 @@ const server = http.createServer(async (req, res) => {
             try { payload = JSON.parse(body); } catch(err) {}
         }
 
-        // Route: POST /api/relay/dispatch (Simulate & verify cross-chain relay execution to Arc or Base)
+        // Route: POST /api/relay/dispatch (Simulate & verify cross-chain relay execution to Base)
         if (pathname === '/api/relay/dispatch' && req.method === 'POST') {
-            const targetChain = payload.targetChain || "ARC_MAINNET";
+            const targetChain = payload.targetChain || "BASE_MAINNET";
             const chainConfigs = {
                 "BASE_SEPOLIA": {
                     name: "Coinbase Base Sepolia",
@@ -236,16 +236,9 @@ const server = http.createServer(async (req, res) => {
                     gasToken: "ETH",
                     vaultAddress: baseMainnetDeployData.vaultAddress,
                     explorerPrefix: "https://basescan.org/tx/"
-                },
-                "ARC_MAINNET": {
-                    name: "Circle Arc Mainnet",
-                    chainId: 42161,
-                    gasToken: "USDC (Native Gas)",
-                    vaultAddress: "0x777a82c4daF8c26a1D825F2F6812f9AA1e508cb8C",
-                    explorerPrefix: "https://explorer.arc.circle.com/tx/"
                 }
             };
-            const config = chainConfigs[targetChain] || chainConfigs["BASE_SEPOLIA"];
+            const config = chainConfigs[targetChain] || chainConfigs["BASE_MAINNET"];
 
             let telemetry = null;
             try {
@@ -327,13 +320,14 @@ const server = http.createServer(async (req, res) => {
 
         // Route: POST /api/rebalance (Real on-chain writeContract)
         if (pathname === '/api/rebalance' && req.method === 'POST') {
-            const targetChain = payload.targetChain || "ARC_MAINNET";
-            console.log(`[ON-CHAIN TX] Processing AI Rebalance for target: ${targetChain}`);
+            const reqTarget = payload.targetChain || "BASE_SEPOLIA";
+            const contractTarget = (reqTarget === "BASE_MAINNET") ? "BASE_SEPOLIA" : reqTarget;
+            console.log(`[ON-CHAIN TX] Processing AI Rebalance for target: ${reqTarget} (Contract arg: ${contractTarget})`);
             try {
                 const txHash = await client.writeContract({
                     address: CONTRACT_ADDRESS,
                     functionName: 'evaluate_and_rebalance',
-                    args: [targetChain],
+                    args: [contractTarget],
                     value: 0
                 });
                 console.log(`Rebalance tx broadcasted: ${txHash}. Waiting for Validator Consensus...`);

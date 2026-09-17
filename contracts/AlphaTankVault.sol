@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 	/**
   * @title AlphaTankVault
   * @dev Autonomous Multi-Chain AI Hedge Fund Settlement Vault
-  * Compatible with Circle Arc Mainnet (USDC-native gas) and Base Sepolia.
+  * Compatible with Coinbase Base Mainnet (Chain ID 8453) and Base Sepolia.
   * 
   * Enforces verifiable execution mandates dispatched by the GenLayer 
   * Intelligent Contract (AlphaTankBrain).

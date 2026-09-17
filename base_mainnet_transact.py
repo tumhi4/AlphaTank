@@ -8,13 +8,24 @@ import sys
 import json
 import os
 import time
+import requests
 from web3 import Web3
 from dotenv import load_dotenv
 load_dotenv()
 
-RPC_URL = os.environ.get("BASE_MAINNET_RPC", "https://developer-access-mainnet.base.org")
+RPC_URLS = [
+    os.environ.get("BASE_MAINNET_RPC", "https://mainnet.base.org"),
+    "https://1rpc.io/base",
+    "https://developer-access-mainnet.base.org"
+]
 CHAIN_ID = 8453
 DEPLOYER_KEY = os.environ.get("BASE_MAINNET_KEY")
+
+def get_w3(rpc=None):
+    session = requests.Session()
+    session.headers.update({"User-Agent": "AlphaTank/1.0"})
+    target_rpc = rpc or RPC_URLS[0]
+    return Web3(Web3.HTTPProvider(target_rpc, session=session, request_kwargs={"timeout": 6}))
 
 def get_vault_info():
     with open("deployment_base_mainnet.json") as f:
@@ -22,70 +33,79 @@ def get_vault_info():
     return data["vaultAddress"]
 
 def get_telemetry(user_address=None):
-    w3 = Web3(Web3.HTTPProvider(RPC_URL))
     vault_address = Web3.to_checksum_address(get_vault_info())
-
     with open("contracts/AlphaTankVault.json") as f:
         abi = json.load(f)["abi"]
-    vault = w3.eth.contract(address=vault_address, abi=abi)
 
-    eth_wei = w3.eth.get_balance(vault_address)
-    eth_bal = float(w3.from_wei(eth_wei, 'ether'))
-    total_shares = vault.functions.totalSupply().call()
-    total_aum = vault.functions.totalAumUsdc().call()
-    nav_bps = vault.functions.navPerShareBps().call()
-    btc_w = vault.functions.btcWeightBps().call()
-    eth_w = vault.functions.ethWeightBps().call()
-    sol_w = vault.functions.solWeightBps().call()
-    cash_w = vault.functions.cashWeightBps().call()
-
-    user_shares = 0
-    if user_address:
+    last_err = None
+    for rpc in RPC_URLS:
         try:
-            c_addr = Web3.to_checksum_address(user_address)
-            user_shares = vault.functions.balanceOf(c_addr).call()
-        except Exception:
-            pass
+            w3 = get_w3(rpc)
+            vault = w3.eth.contract(address=vault_address, abi=abi)
 
-    aum_dollars = round(eth_bal * 2500.0, 2)
-    if aum_dollars == 0 and total_shares > 0:
-        aum_dollars = round((total_shares * (nav_bps / 10000.0)) / 1e6, 2)
+            eth_wei = w3.eth.get_balance(vault_address)
+            eth_bal = float(w3.from_wei(eth_wei, 'ether'))
+            total_shares = vault.functions.totalSupply().call()
+            total_aum = vault.functions.totalAumUsdc().call()
+            nav_bps = vault.functions.navPerShareBps().call()
+            btc_w = vault.functions.btcWeightBps().call()
+            eth_w = vault.functions.ethWeightBps().call()
+            sol_w = vault.functions.solWeightBps().call()
+            cash_w = vault.functions.cashWeightBps().call()
 
-    result = {
-        "network": "base_mainnet",
-        "networkName": "Coinbase Base Mainnet",
-        "chainId": CHAIN_ID,
-        "vaultAddress": vault_address,
-        "basescan": f"https://basescan.org/address/{vault_address}",
-        "ethBalance": eth_bal,
-        "ethBalanceFormatted": f"{eth_bal:.6f} ETH",
-        "totalShares": total_shares,
-        "totalAumUsdc": aum_dollars,
-        "navBps": nav_bps,
-        "navDollars": nav_bps / 10000.0,
-        "weights": {
-            "btc": btc_w,
-            "eth": eth_w,
-            "sol": sol_w,
-            "cash": cash_w
-        },
-        "allocations": {
-            "BTC": f"{btc_w / 100.0:.2f}%",
-            "ETH": f"{eth_w / 100.0:.2f}%",
-            "SOL": f"{sol_w / 100.0:.2f}%",
-            "USDC_CASH": f"{cash_w / 100.0:.2f}%"
-        },
-        "userShares": user_shares,
-        "userSharesFormatted": f"{user_shares:,} ATK"
-    }
-    print(json.dumps(result))
+            user_shares = 0
+            if user_address:
+                try:
+                    c_addr = Web3.to_checksum_address(user_address)
+                    user_shares = vault.functions.balanceOf(c_addr).call()
+                except Exception:
+                    pass
+
+            aum_dollars = round(eth_bal * 2500.0, 2)
+            if aum_dollars == 0 and total_shares > 0:
+                aum_dollars = round((total_shares * (nav_bps / 10000.0)) / 1e6, 2)
+
+            result = {
+                "network": "base_mainnet",
+                "networkName": "Coinbase Base Mainnet",
+                "chainId": CHAIN_ID,
+                "vaultAddress": vault_address,
+                "basescan": f"https://basescan.org/address/{vault_address}",
+                "ethBalance": eth_bal,
+                "ethBalanceFormatted": f"{eth_bal:.6f} ETH",
+                "totalShares": total_shares,
+                "totalAumUsdc": aum_dollars,
+                "navBps": nav_bps,
+                "navDollars": nav_bps / 10000.0,
+                "weights": {
+                    "btc": btc_w,
+                    "eth": eth_w,
+                    "sol": sol_w,
+                    "cash": cash_w
+                },
+                "allocations": {
+                    "BTC": f"{btc_w / 100.0:.2f}%",
+                    "ETH": f"{eth_w / 100.0:.2f}%",
+                    "SOL": f"{sol_w / 100.0:.2f}%",
+                    "USDC_CASH": f"{cash_w / 100.0:.2f}%"
+                },
+                "userShares": user_shares,
+                "userSharesFormatted": f"{user_shares:,} ATK"
+            }
+            print(json.dumps(result))
+            return
+        except Exception as e:
+            last_err = e
+            continue
+
+    print(json.dumps({"error": str(last_err)}))
 
 def deposit(amount_eth=0.00005):
     if not DEPLOYER_KEY:
         print(json.dumps({"success": False, "error": "BASE_MAINNET_KEY not set in .env"}))
         return
 
-    w3 = Web3(Web3.HTTPProvider(RPC_URL))
+    w3 = get_w3()
     acct = w3.eth.account.from_key(DEPLOYER_KEY)
     vault_address = Web3.to_checksum_address(get_vault_info())
 
@@ -128,7 +148,7 @@ def rebalance(scenario="BULL"):
         print(json.dumps({"success": False, "error": "BASE_MAINNET_KEY not set in .env"}))
         return
 
-    w3 = Web3(Web3.HTTPProvider(RPC_URL))
+    w3 = get_w3()
     acct = w3.eth.account.from_key(DEPLOYER_KEY)
     vault_address = Web3.to_checksum_address(get_vault_info())
 

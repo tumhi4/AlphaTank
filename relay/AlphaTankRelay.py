@@ -3,12 +3,12 @@ AlphaTank Capital - Cross-Chain Settlement Relay
 ================================================
 Monitors GenLayer Intelligent Contract (AlphaTankBrain) rebalancing mandates
 and cryptographically relays verified portfolio allocation updates to 
-Circle Arc Mainnet (USDC-native gas L1) and Coinbase Base Sepolia.
+Coinbase Base Mainnet (Chain ID 8453) and Coinbase Base Sepolia (Chain ID 84532).
 
 Features:
 - Cryptographic Mandate Integrity Verification
 - Replay Protection Guard
-- Multi-chain routing (Circle Arc / Base)
+- Multi-chain routing (Base Mainnet / Base Sepolia)
 - Automated Telemetry and Event Logging
 """
 
@@ -25,11 +25,11 @@ logging.basicConfig(
 logger = logging.getLogger("AlphaTankRelay")
 
 TARGET_CHAINS = {
-    "ARC_MAINNET": {
-        "chain_id": 42161,
-        "name": "Circle Arc Mainnet (Native USDC Gas)",
-        "rpc": "https://rpc.arc.circle.com",
-        "gas_token": "USDC"
+    "BASE_MAINNET": {
+        "chain_id": 8453,
+        "name": "Coinbase Base Mainnet",
+        "rpc": "https://mainnet.base.org",
+        "gas_token": "ETH"
     },
     "BASE_SEPOLIA": {
         "chain_id": 84532,
@@ -100,12 +100,12 @@ class AlphaTankRelay:
         logger.info(f"[VERIFIED] Mandate satisfies all on-chain mathematical invariants ({regime}).")
         return True
 
-    def dispatch_settlement_to_evm(self, mandate: dict, target_chain: str = "ARC_MAINNET") -> dict:
+    def dispatch_settlement_to_evm(self, mandate: dict, target_chain: str = "BASE_MAINNET") -> dict:
         """
         Dispatches verified rebalance mandate to EVM settlement vault
-        on Circle Arc Mainnet or Base Sepolia.
+        on Coinbase Base Mainnet or Base Sepolia.
         """
-        target_info = TARGET_CHAINS.get(target_chain, TARGET_CHAINS["ARC_MAINNET"])
+        target_info = TARGET_CHAINS.get(target_chain, TARGET_CHAINS["BASE_MAINNET"])
         logger.info(f"Targeting Settlement Chain: {target_info['name']} (Gas: {target_info['gas_token']})")
 
         is_valid = self.verify_mandate_integrity(mandate)
@@ -138,18 +138,18 @@ def run_relay_demo():
 
     relay = AlphaTankRelay()
 
-    mandate_arc = {
-        "mandate_hash": "0x4152435f4d41494e4e45543a313a333530303a333030303a323030303a31353030",
+    mandate_mainnet = {
+        "mandate_hash": "0x17463cd11c81a058a9b6900dc0b5db5cdc12b9a337c6a082f97b31b2a9073d6a",
         "market_regime": "BULL_MOMENTUM",
         "btc_weight_bps": 3500,
-        "eth_weight_bps": 3000,
-        "sol_weight_bps": 2000,
+        "eth_weight_bps": 2500,
+        "sol_weight_bps": 2500,
         "usdc_cash_bps": 1500,
         "nav_bps": 10600
     }
-    print("\n--- [RELAY CYCLE 1] Processing Mandate for Circle Arc Mainnet ---")
-    receipt_arc = relay.dispatch_settlement_to_evm(mandate_arc, target_chain="ARC_MAINNET")
-    print(json.dumps(receipt_arc, indent=2))
+    print("\n--- [RELAY CYCLE 1] Processing Mandate for Coinbase Base Mainnet ---")
+    receipt_mainnet = relay.dispatch_settlement_to_evm(mandate_mainnet, target_chain="BASE_MAINNET")
+    print(json.dumps(receipt_mainnet, indent=2))
 
     mandate_base = {
         "mandate_hash": "0x424153455f5345504f4c49413a323a303a303a303a31303030303a3130303730",
@@ -160,12 +160,12 @@ def run_relay_demo():
         "usdc_cash_bps": 10000,
         "nav_bps": 10070
     }
-    print("\n--- [RELAY CYCLE 2] Processing Circuit Breaker for Coinbase Base ---")
+    print("\n--- [RELAY CYCLE 2] Processing Circuit Breaker for Coinbase Base Sepolia ---")
     receipt_base = relay.dispatch_settlement_to_evm(mandate_base, target_chain="BASE_SEPOLIA")
     print(json.dumps(receipt_base, indent=2))
 
     print("\n" + "=" * 85)
-    print("   ALL RELAY SETTLEMENTS VERIFIED AND CONFIRMED ACROSS ARC & BASE!")
+    print("   ALL RELAY SETTLEMENTS VERIFIED AND CONFIRMED ACROSS COINBASE BASE!")
     print("=" * 85)
 
 

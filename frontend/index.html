@@ -81,7 +81,7 @@
         <div class="hidden md:flex items-center space-x-2 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg">
           <i data-lucide="layers" class="w-3.5 h-3.5 text-indigo-400"></i>
           <span class="text-slate-400">Settlement:</span>
-          <span id="headerTargetBadge" class="text-indigo-300 font-semibold">Circle Arc Mainnet</span>
+          <span id="headerTargetBadge" class="text-indigo-300 font-semibold">Coinbase Base</span>
         </div>
 
         <!-- Explorer Link -->
@@ -383,7 +383,7 @@
               <div class="w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold">$</div>
               <div>
                 <div class="font-bold text-sm text-white">USDC Cash Reserve</div>
-                <div class="text-[10px] text-slate-400">Circle Arc Native Yield</div>
+                <div class="text-[10px] text-slate-400">Liquid Reserve Buffer</div>
               </div>
             </div>
             <span id="allocPctCash" class="mono text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/30">15.00%</span>
@@ -398,8 +398,8 @@
               <span class="text-emerald-400 font-semibold">&ge; 15.00% Min (Enforced)</span>
             </div>
             <div class="flex justify-between">
-              <span>Settlement Gas:</span>
-              <span class="text-emerald-300 font-semibold">Circle Arc L1</span>
+              <span>Settlement Layer:</span>
+              <span class="text-emerald-300 font-semibold">Coinbase Base L2</span>
             </div>
           </div>
         </div>
@@ -495,8 +495,8 @@
           <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 flex items-start space-x-2.5">
             <i data-lucide="circle-dollar-sign" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
             <div>
-              <strong class="text-white">Circle Arc Native USDC Yield:</strong>
-              <span class="text-slate-400">The mandatory 15% USDC cash buffer earns yield in Circle liquidity vaults on Arc Mainnet, paying gas directly in USDC.</span>
+              <strong class="text-white">Base Native USDC Liquidity & Buffer:</strong>
+              <span class="text-slate-400">The mandatory 15% USDC cash reserve maintains instant liquidity on Coinbase Base, enabling rapid rebalancing and immediate investor redemptions with sub-cent gas.</span>
             </div>
           </div>
           <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 flex items-start space-x-2.5">
@@ -636,7 +636,7 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- SECTION 4: CROSS-CHAIN ARCHITECTURE VISUALIZER (ARC & BASE)               -->
+    <!-- SECTION 4: CROSS-CHAIN ARCHITECTURE VISUALIZER (GENLAYER & BASE)           -->
     <!-- ========================================================================= -->
     <div class="glass-panel rounded-2xl p-6 space-y-6 glow-indigo">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
@@ -645,7 +645,7 @@
             <i data-lucide="git-merge" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="font-bold text-white text-base">Cross-Chain Architecture: How Circle Arc & Base Sepolia Work</h3>
+            <h3 class="font-bold text-white text-base">Cross-Chain Architecture: How GenLayer AI & Coinbase Base Work Together</h3>
             <p class="text-xs text-slate-400">3-Stage Autonomous Pipeline from AI Consensus to Multi-Chain Settlement</p>
           </div>
         </div>
@@ -712,12 +712,12 @@
           </p>
           <div class="space-y-1.5 text-[11px]">
             <div class="p-2 rounded bg-slate-900 border border-slate-800">
-              <strong class="text-white block">Circle Arc Mainnet (L1):</strong>
-              <span class="text-slate-400 text-[10px]">USDC native gas token; direct execution into Circle yield vaults without ETH gas spikes.</span>
+              <strong class="text-white block">Coinbase Base Mainnet (L2):</strong>
+              <span class="text-slate-400 text-[10px]">Real on-chain EVM settlement (Chain ID: 8453) with sub-cent EIP-4844 execution and live BaseScan tracking.</span>
             </div>
             <div class="p-2 rounded bg-slate-900 border border-slate-800">
               <strong class="text-white block">Coinbase Base Sepolia (L2):</strong>
-              <span class="text-slate-400 text-[10px]">Sub-cent transaction fees; rebalances AMM liquidity into Aerodrome and Aave pools.</span>
+              <span class="text-slate-400 text-[10px]">Sub-cent transaction fees; executes live rebalances and investor deposits on testnet.</span>
             </div>
           </div>
         </div>
@@ -731,7 +731,7 @@
             <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
             <span>Cross-Chain Relay Settlement Confirmed</span>
           </span>
-          <span id="relayResultChainBadge" class="px-2 py-0.5 bg-indigo-500/20 text-indigo-300 rounded mono text-[10px]">ARC_MAINNET</span>
+          <span id="relayResultChainBadge" class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded mono text-[10px]">BASE_MAINNET</span>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 font-mono text-[11px] text-slate-300">
           <div>Relay Tx Hash: <span id="relayTxHashDisplay" class="text-cyan-300">0x...</span></div>
@@ -824,7 +824,7 @@
             <span>AI Investment Committee Consensus Rationale:</span>
           </div>
           <p id="rationaleText" class="text-xs text-slate-300 italic">
-            "Crypto majors show modest negative 24h momentum, indicating near-term sideways-to-soft price action. Bullish macro catalysts from the Arc mainnet launch support a constructive medium-term backdrop with 15% USDC liquidity preservation."
+            "Crypto majors show constructive momentum with healthy institutional accumulation. Bullish macro catalysts from the Base ecosystem expansion support a constructive medium-term backdrop with 15% USDC liquidity preservation."
           </p>
         </div>
       </div>
@@ -862,7 +862,7 @@
                   <input type="radio" name="scenario" value="BULL" checked class="text-cyan-500 focus:ring-0">
                   <div>
                     <span class="text-emerald-400 font-bold">🟢 Bull Momentum:</span>
-                    <span class="text-slate-300">Arc Mainnet launch (Score: 82, NAV +6.0%)</span>
+                    <span class="text-slate-300">Base Mainnet rally (Score: 82, NAV +6.0%)</span>
                   </div>
                 </label>
 
@@ -969,7 +969,7 @@
         <div class="bg-slate-950/90 border border-slate-800 p-3 rounded-xl text-[11px] space-y-1">
           <div class="text-slate-400 font-medium flex items-center justify-between">
             <span>Active Mandate Commitment:</span>
-            <span class="text-indigo-400 font-semibold uppercase" id="cardMandateTarget">ARC_MAINNET</span>
+            <span class="text-emerald-400 font-semibold uppercase" id="cardMandateTarget">BASE_MAINNET</span>
           </div>
           <div class="flex items-center space-x-2">
             <span id="mandateHashDisplay" class="mono text-slate-300 font-bold truncate">0xacae130003000250015001005000000000000000000000000000000000000000</span>
@@ -1037,11 +1037,11 @@
             </tr>
             <tr>
               <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 text-[10px] font-bold">AI_REBALANCE</span></td>
-              <td class="py-3 px-3 mono text-cyan-400"><a href="https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C" target="_blank" class="hover:underline">0x4e7c4eca...11d3be</a></td>
-              <td class="py-3 px-3"><span class="text-indigo-300 font-semibold">Circle Arc Mainnet</span></td>
-              <td class="py-3 px-3 text-slate-300">30% BTC / 30% ETH / 25% SOL / 15% Cash</td>
-              <td class="py-3 px-3 mono text-emerald-400 font-bold">$1.0050</td>
-              <td class="py-3 px-3 text-right"><span class="text-emerald-400 font-bold">FINALIZED</span></td>
+              <td class="py-3 px-3 mono text-cyan-400"><a href="https://basescan.org/tx/0x17463cd11c81a058a9b6900dc0b5db5cdc12b9a337c6a082f97b31b2a9073d6a" target="_blank" class="hover:underline">0x17463cd1...073d6a</a></td>
+              <td class="py-3 px-3"><span class="text-emerald-300 font-semibold">Coinbase Base Mainnet</span></td>
+              <td class="py-3 px-3 text-slate-300">35% BTC / 25% ETH / 25% SOL / 15% Cash</td>
+              <td class="py-3 px-3 mono text-emerald-400 font-bold">$1.0600</td>
+              <td class="py-3 px-3 text-right"><span class="text-emerald-400 font-bold">CONFIRMED (L2)</span></td>
             </tr>
             <tr>
               <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] font-bold">DEPOSIT</span></td>
@@ -1099,7 +1099,7 @@
       <div class="flex items-center space-x-4">
         <a href="https://studio.genlayer.com" target="_blank" class="hover:text-slate-300">GenLayer Studio</a>
         <span>&bull;</span>
-        <a href="https://arc.circle.com" target="_blank" class="hover:text-slate-300">Circle Arc Mainnet</a>
+        <a href="https://basescan.org" target="_blank" class="hover:text-slate-300">BaseScan (Base Mainnet)</a>
         <span>&bull;</span>
         <a href="https://base.org" target="_blank" class="hover:text-slate-300">Coinbase Base</a>
       </div>
@@ -1538,10 +1538,10 @@
         if (aumDelta) aumDelta.innerText = `~$${st.totalAumUsdc.toFixed(2)} USDC Value (BaseScan)`;
         if (allocAum) allocAum.innerText = `${st.ethFormatted} (~$${st.totalAumUsdc.toFixed(2)} USDC)`;
       } else if (isMainnet) {
-        if (aumLabel) aumLabel.innerText = 'Target Institutional AUM';
-        if (aumVal) aumVal.innerText = '$500,000.00';
-        if (aumDelta) aumDelta.innerText = 'Seed Liquidity Commitment';
-        if (allocAum) allocAum.innerText = '$500,000.00 USDC';
+        if (aumLabel) aumLabel.innerText = 'Vault Collateral (TVL)';
+        if (aumVal) aumVal.innerText = st.ethFormatted || '0.000000 ETH';
+        if (aumDelta) aumDelta.innerText = st.totalAumUsdc > 0 ? `~$${st.totalAumUsdc.toFixed(2)} USDC Value (BaseScan)` : '$0.00 USDC Value (BaseScan)';
+        if (allocAum) allocAum.innerText = `${st.ethFormatted || '0.000000 ETH'} (~$${st.totalAumUsdc.toFixed(2)} USDC)`;
       } else {
         if (aumLabel) aumLabel.innerText = 'Vault AUM (USDC)';
         if (aumVal) aumVal.innerText = '$' + st.aumUsdc.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1564,9 +1564,9 @@
         if (navSub) navSub.innerText = '($1.0000 NAV)';
       } else if (isMainnet) {
         if (navLabel) navLabel.innerText = 'Total ATK Supply';
-        if (navVal) navVal.innerText = '500,000 ATK';
-        if (navBps) navBps.innerText = '10,000 bps';
-        if (navSub) navSub.innerText = '($1.0000 Genesis)';
+        if (navVal) navVal.innerText = `${st.totalShares.toLocaleString()} ATK`;
+        if (navBps) navBps.innerText = `${st.navBps.toLocaleString()} bps`;
+        if (navSub) navSub.innerText = `($${(st.navBps / 10000).toFixed(4)} NAV)`;
       } else {
         if (navLabel) navLabel.innerText = 'Share NAV (ATK)';
         const navDollars = (st.navBps / 10000).toFixed(4);
@@ -1585,9 +1585,11 @@
         if (profVal) profVal.innerText = '$1.0000';
         if (profSub) profSub.innerText = 'Genesis Par Value';
       } else if (isMainnet) {
-        if (profLabel) profLabel.innerText = 'Yield Mechanism';
-        if (profVal) profVal.innerText = '18.4% APY';
-        if (profSub) profSub.innerText = 'Aerodrome + Aave V3';
+        if (profLabel) profLabel.innerText = 'Vault Share NAV';
+        if (profVal) profVal.innerText = '$' + (st.navBps / 10000).toFixed(4);
+        const pDeltaBps = st.navBps - 10000;
+        const pDeltaSign = pDeltaBps >= 0 ? '+' : '';
+        if (profSub) profSub.innerText = `${st.navBps.toLocaleString()} bps (${pDeltaSign}${(pDeltaBps / 100).toFixed(1)}% Rebalanced)`;
       } else {
         if (profLabel) profLabel.innerText = 'Net Fund Profit';
         const pUsdc = st.aumUsdc - 10000;
@@ -1605,7 +1607,7 @@
         if (regVal) regVal.innerText = st.regime;
         if (sentVal) sentVal.innerText = st.macroSentiment;
       } else if (isMainnet) {
-        if (regLabel) regLabel.innerText = 'Settlement Protocol';
+        if (regLabel) regLabel.innerText = 'Settlement Layer';
         if (regVal) regVal.innerText = st.regime;
         if (sentVal) sentVal.innerText = st.macroSentiment;
       } else {
@@ -1624,9 +1626,9 @@
         if (circVal) circVal.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i><span>MANDATE CONNECTED</span>';
         if (circSub) circSub.innerText = 'Relayed from GenLayer Brain';
       } else if (isMainnet) {
-        if (circLabel) circLabel.innerText = 'Circuit Breaker';
-        if (circVal) circVal.innerHTML = '<i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i><span>100% CASH FLIGHT</span>';
-        if (circSub) circSub.innerText = 'Auto-trigger on Fear < 25';
+        if (circLabel) circLabel.innerText = 'AI Relay Inflow';
+        if (circVal) circVal.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i><span>MANDATE CONNECTED</span>';
+        if (circSub) circSub.innerText = 'Block 51410095 Mandate Active';
       } else {
         if (circLabel) circLabel.innerText = 'Risk Protection';
         if (circVal) circVal.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i><span>NOMINAL (HEDGED)</span>';
@@ -1634,7 +1636,7 @@
       }
 
       // Capital Allocation Weights & Values
-      const totalCap = isBase ? (st.totalAumUsdc || 0.25) : (isMainnet ? 500000 : st.aumUsdc);
+      const totalCap = (isBase || isMainnet) ? (st.totalAumUsdc || 0) : st.aumUsdc;
       const btcD = (totalCap * (st.weights.btc / 10000)).toFixed(2);
       const ethD = (totalCap * (st.weights.eth / 10000)).toFixed(2);
       const solD = (totalCap * (st.weights.sol / 10000)).toFixed(2);
@@ -1646,13 +1648,13 @@
       const cashPct = (st.weights.cash / 100).toFixed(2);
 
       const allocUsdcBtc = document.getElementById('allocUsdcBtc');
-      if (allocUsdcBtc) allocUsdcBtc.innerText = '$' + parseFloat(btcD).toLocaleString();
+      if (allocUsdcBtc) allocUsdcBtc.innerText = '$' + parseFloat(btcD).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       const allocUsdcEth = document.getElementById('allocUsdcEth');
-      if (allocUsdcEth) allocUsdcEth.innerText = '$' + parseFloat(ethD).toLocaleString();
+      if (allocUsdcEth) allocUsdcEth.innerText = '$' + parseFloat(ethD).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       const allocUsdcSol = document.getElementById('allocUsdcSol');
-      if (allocUsdcSol) allocUsdcSol.innerText = '$' + parseFloat(solD).toLocaleString();
+      if (allocUsdcSol) allocUsdcSol.innerText = '$' + parseFloat(solD).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       const allocUsdcCash = document.getElementById('allocUsdcCash');
-      if (allocUsdcCash) allocUsdcCash.innerText = '$' + parseFloat(cashD).toLocaleString();
+      if (allocUsdcCash) allocUsdcCash.innerText = '$' + parseFloat(cashD).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
       const allocPctBtc = document.getElementById('allocPctBtc');
       if (allocPctBtc) allocPctBtc.innerText = btcPct + '%';
@@ -1693,7 +1695,7 @@
       const navDollars = (st.navBps / 10000).toFixed(4);
       const depNavRate = document.getElementById('depositNavRate');
       const withNavRate = document.getElementById('withdrawNavRate');
-      if (isBase) {
+      if (isBase || isMainnet) {
         if (depNavRate) depNavRate.innerText = `1 ETH = $2,500 USDC | NAV: $${navDollars}`;
         if (withNavRate) withNavRate.innerText = `NAV: $${navDollars} (1 ATK = $1.0000 ETH Collateral)`;
       } else {
@@ -1755,28 +1757,28 @@
         if (withPayoutLabel) withPayoutLabel.innerText = 'Estimated ETH Payout:';
         if (btnWithText) btnWithText.innerText = 'WITHDRAW ETH ON BASE SEPOLIA (METAMASK)';
       } else if (isMainnet) {
-        if (depNotice) depNotice.innerText = 'Base Mainnet Institutional Gateway — Direct EIP-4844 sub-cent deposit:';
-        if (depInputLabel) depInputLabel.innerText = 'Institutional Deposit (USDC):';
+        if (depNotice) depNotice.innerText = 'Deposit native ETH on Coinbase Base Mainnet to mint ATK fund shares at current NAV (1 ETH = $2,500 USDC collateral):';
+        if (depInputLabel) depInputLabel.innerText = 'Deposit Amount (ETH):';
         if (depBadge) { depBadge.innerText = 'Base Mainnet (8453)'; depBadge.className = 'text-[10px] mono text-emerald-400 font-semibold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800'; }
-        if (depPrefix) depPrefix.innerText = '$';
-        if (depSuffix) depSuffix.innerText = 'USDC';
-        if (depInput && (!depInput.value || depInput.value === '0.001')) depInput.value = '5000';
-        if (depRateLabel) depRateLabel.innerText = 'Institutional NAV:';
-        if (btnDepText) btnDepText.innerText = 'EXECUTE BASE MAINNET ALLOCATION';
+        if (depPrefix) depPrefix.innerText = 'Ξ';
+        if (depSuffix) depSuffix.innerText = 'ETH';
+        if (depInput && (depInput.value === '500' || depInput.value === '5000' || !depInput.value)) depInput.value = '0.0001';
+        if (depRateLabel) depRateLabel.innerText = 'Valuation Rate:';
+        if (btnDepText) btnDepText.innerText = 'DEPOSIT ETH ON BASE MAINNET (METAMASK)';
 
-        if (withNotice) withNotice.innerText = 'Institutional ATK share redemption on Base Mainnet:';
-        if (withInputLabel) withInputLabel.innerText = 'Shares to Redeem:';
+        if (withNotice) withNotice.innerText = 'Redeem ATK shares for proportional native ETH on Coinbase Base Mainnet:';
+        if (withInputLabel) withInputLabel.innerText = 'ATK Shares to Burn (Base Mainnet):';
         if (withBadge) { withBadge.innerText = 'Base Mainnet (8453)'; withBadge.className = 'text-[10px] mono text-emerald-400 font-semibold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800'; }
-        if (withInput && (!withInput.value || withInput.value === '1')) withInput.value = '1000';
-        if (withPayoutLabel) withPayoutLabel.innerText = 'USDC Payout:';
-        if (btnWithText) btnWithText.innerText = 'EXECUTE INSTITUTIONAL REDEMPTION';
+        if (withInput && (depInput.value === '500' || withInput.value === '1000' || !withInput.value)) withInput.value = '1';
+        if (withPayoutLabel) withPayoutLabel.innerText = 'Estimated ETH Payout:';
+        if (btnWithText) btnWithText.innerText = 'WITHDRAW ETH ON BASE MAINNET (METAMASK)';
       } else {
         if (depNotice) depNotice.innerText = 'Deposit USDC collateral into AlphaTank Intelligent Contract on GenLayer Studio:';
         if (depInputLabel) depInputLabel.innerText = 'Deposit Amount (USDC):';
         if (depBadge) { depBadge.innerText = 'GenLayer Studio'; depBadge.className = 'text-[10px] mono text-cyan-400 font-semibold bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800'; }
         if (depPrefix) depPrefix.innerText = '$';
         if (depSuffix) depSuffix.innerText = 'USDC';
-        if (depInput && (depInput.value === '0.001' || !depInput.value)) depInput.value = '500';
+        if (depInput && (depInput.value === '0.001' || depInput.value === '0.0001' || !depInput.value)) depInput.value = '500';
         if (depRateLabel) depRateLabel.innerText = 'Share NAV Rate:';
         if (btnDepText) btnDepText.innerText = 'DEPOSIT USDC ON GENLAYER STUDIO';
 
@@ -1825,10 +1827,22 @@
       }
 
       if (isMainnet) {
+        let shares = 0;
+        try {
+          const res = await fetch(`/api/base-mainnet/telemetry?address=${address}`);
+          if (res.ok) {
+            const d = await res.json();
+            if (d.success && d.telemetry) {
+              shares = d.telemetry.userShares || 0;
+            }
+          }
+        } catch(e) {}
+        const navDollars = (baseMainnetState.navBps || 10600) / 10000;
+        const currentVal = shares * navDollars;
         updateInvestorUI({
-          shares_held: 10000,
-          current_value_usdc: 10000,
-          deposited_usdc: 10000,
+          shares_held: shares,
+          current_value_usdc: currentVal,
+          deposited_usdc: currentVal,
           unrealized_pnl_usdc: 0
         });
         return;
@@ -2065,19 +2079,100 @@
         return;
       }
 
-      // ROUTE 2: BASE MAINNET
+      // ROUTE 2: BASE MAINNET (Live EVM Smart Contract on Base Mainnet)
       if (activeNetwork === 'BASE_MAINNET') {
-        setTimeout(() => {
-          btn.innerHTML = oldHtml;
-          btn.disabled = false;
-          showTxModal(
-            'BASE MAINNET ALLOCATION CONFIRMED',
-            '0x8a2c266dbb4bdf7cef19f621d21eba22a13a6f4a7c8e9f0123456789abcdef01',
-            `Allocated $${amount} USDC on Base Mainnet. Routing liquidity into Aerodrome and Aave V3.`,
-            'https://basescan.org',
-            'VIEW ON BASESCAN MAINNET'
-          );
-        }, 800);
+        const vaultAddr = NETWORKS.BASE_MAINNET.contractAddress;
+        const ethVal = amount;
+
+        // Try MetaMask Injected
+        if (window.ethereum) {
+          try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const userAddr = accounts[0];
+
+            try {
+              await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: '0x2105' }]
+              });
+            } catch (switchErr) {
+              if (switchErr.code === 4902) {
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [{
+                    chainId: '0x2105',
+                    chainName: 'Base Mainnet',
+                    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                    rpcUrls: ['https://mainnet.base.org'],
+                    blockExplorerUrls: ['https://basescan.org']
+                  }]
+                });
+              }
+            }
+
+            const weiVal = BigInt(Math.max(1, Math.floor(ethVal * 1e18)));
+            const weiHex = '0x' + weiVal.toString(16);
+
+            // depositETH() -> selector 0xf6326fb3
+            const txHash = await window.ethereum.request({
+              method: 'eth_sendTransaction',
+              params: [{
+                from: userAddr,
+                to: vaultAddr,
+                value: weiHex,
+                data: '0xf6326fb3'
+              }]
+            });
+
+            btn.innerHTML = oldHtml;
+            btn.disabled = false;
+            showTxModal(
+              'BASE MAINNET DEPOSIT BROADCASTED!',
+              txHash,
+              `Successfully deposited ${ethVal} ETH into AlphaTank Vault on Base Mainnet (${vaultAddr}).`,
+              `https://basescan.org/tx/${txHash}`,
+              'VIEW ON BASESCAN (MAINNET)'
+            );
+            addAuditLogRow('MAINNET_DEPOSIT', txHash, 'Base Mainnet L2', `Deposited ${ethVal} ETH -> Minted ATK Shares`, '$1.0600', 'CONFIRMED (L2)');
+            await loadNetworkTelemetry();
+            return;
+          } catch (metamaskErr) {
+            console.warn('MetaMask error / rejection:', metamaskErr.message);
+            if (metamaskErr.code === 4001) {
+              alert('Transaction cancelled in MetaMask.');
+              btn.innerHTML = oldHtml;
+              btn.disabled = false;
+              return;
+            }
+          }
+        }
+
+        // Programmatic Fallback via backend RPC
+        try {
+          const res = await fetch('/api/base-mainnet/deposit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amountEth: ethVal })
+          });
+          if (res.ok) {
+            const result = await res.json();
+            btn.innerHTML = oldHtml;
+            btn.disabled = false;
+            showTxModal(
+              'BASE MAINNET ON-CHAIN DEPOSIT FINALIZED',
+              result.txHash,
+              `Deposited ${ethVal} ETH into AlphaTank Vault on Base Mainnet.`,
+              result.basescan,
+              'VIEW ON BASESCAN (MAINNET)'
+            );
+            addAuditLogRow('MAINNET_DEPOSIT', result.txHash, 'Base Mainnet L2', `Deposited ${ethVal} ETH -> Minted ATK Shares`, '$1.0600', 'CONFIRMED (L2)');
+            await loadNetworkTelemetry();
+            return;
+          }
+        } catch (e) {}
+
+        btn.innerHTML = oldHtml;
+        btn.disabled = false;
         return;
       }
 
@@ -2233,17 +2328,71 @@
 
       // ROUTE 2: BASE MAINNET
       if (activeNetwork === 'BASE_MAINNET') {
-        setTimeout(() => {
-          btn.innerHTML = oldHtml;
-          btn.disabled = false;
-          showTxModal(
-            'BASE MAINNET REDEMPTION CONFIRMED',
-            '0xd7588420bff68c44d1fffd474cce5744b2c70683592f122922841a353e7eaa26',
-            `Redeemed ${sharesToBurn} ATK shares on Base Mainnet.`,
-            'https://basescan.org',
-            'VIEW ON BASESCAN MAINNET'
-          );
-        }, 800);
+        const vaultAddr = NETWORKS.BASE_MAINNET.contractAddress;
+
+        if (window.ethereum) {
+          try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const userAddr = accounts[0];
+
+            try {
+              await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: '0x2105' }]
+              });
+            } catch (switchErr) {
+              if (switchErr.code === 4902) {
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [{
+                    chainId: '0x2105',
+                    chainName: 'Base Mainnet',
+                    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                    rpcUrls: ['https://mainnet.base.org'],
+                    blockExplorerUrls: ['https://basescan.org']
+                  }]
+                });
+              }
+            }
+
+            // withdrawETH(uint256) selector: 0xf14210a6
+            const sharesHex = BigInt(sharesToBurn).toString(16).padStart(64, '0');
+            const txData = '0xf14210a6' + sharesHex;
+
+            const txHash = await window.ethereum.request({
+              method: 'eth_sendTransaction',
+              params: [{
+                from: userAddr,
+                to: vaultAddr,
+                data: txData
+              }]
+            });
+
+            btn.innerHTML = oldHtml;
+            btn.disabled = false;
+            showTxModal(
+              'BASE MAINNET WITHDRAWAL BROADCASTED!',
+              txHash,
+              `Redeemed ${sharesToBurn} ATK shares for native ETH on Base Mainnet Vault at ${vaultAddr}.`,
+              `https://basescan.org/tx/${txHash}`,
+              'VIEW ON BASESCAN (MAINNET)'
+            );
+            addAuditLogRow('MAINNET_WITHDRAW', txHash, 'Base Mainnet L2', `Redeemed ${sharesToBurn} ATK -> Paid Native ETH`, '$1.0600', 'CONFIRMED (L2)');
+            await loadNetworkTelemetry();
+            return;
+          } catch (metamaskErr) {
+            console.warn('MetaMask withdraw error:', metamaskErr.message);
+            if (metamaskErr.code === 4001) {
+              alert('Transaction cancelled in MetaMask.');
+              btn.innerHTML = oldHtml;
+              btn.disabled = false;
+              return;
+            }
+          }
+        }
+
+        btn.innerHTML = oldHtml;
+        btn.disabled = false;
         return;
       }
 

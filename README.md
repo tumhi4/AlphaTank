@@ -16,7 +16,7 @@
 
 Traditional decentralized index funds and robo-advisors are constrained to rigid mechanical rules or centralized oracle feeds. They cannot read breaking macro headlines, parse institutional sentiment, or dynamically adapt to market regime transitions without centralized manager keys.
 
-AlphaTank deploys an Intelligent Contract on GenLayer (`AlphaTankBrain.py`) that acts as an autonomous, decentralized **Chief Investment Officer (CIO)**. The contract synthesizes real-time market prices, asset momentum, and macro news through GenLayer's **Equivalence Principle** consensus. It computes risk-weighted portfolio allocations, updates share Net Asset Value (NAV), and dispatches cryptographically verified settlement mandates to **Coinbase Base Sepolia**, **Base Mainnet**, and **Circle Arc**.
+AlphaTank deploys an Intelligent Contract on GenLayer (`AlphaTankBrain.py`) that acts as an autonomous, decentralized **Chief Investment Officer (CIO)**. The contract synthesizes real-time market prices, asset momentum, and macro news through GenLayer's **Equivalence Principle** consensus. It computes risk-weighted portfolio allocations, updates share Net Asset Value (NAV), and dispatches cryptographically verified settlement mandates to **Coinbase Base Sepolia** and **Coinbase Base Mainnet**.
 
 ---
 
@@ -46,7 +46,6 @@ flowchart TD
         RELAY["AlphaTank Settlement Relay\n(AlphaTankRelay.py)"]
         BASE_SEP["Coinbase Base Sepolia Vault\n(Testnet Sandbox - ChainID: 84532)"]
         BASE_MAIN["Coinbase Base Mainnet Vault\n(Production L2 - ChainID: 8453)"]
-        ARC["Circle Arc Mainnet Vault\n(Institutional Native USDC Gas L1)"]
     end
 
     CG --> V1 & V2 & V3
@@ -57,7 +56,6 @@ flowchart TD
     HASH --> RELAY
     RELAY --> BASE_SEP
     RELAY --> BASE_MAIN
-    RELAY --> ARC
 ```
 
 ---
@@ -105,7 +103,7 @@ AlphaTank guarantees investor capital protection through immutable, on-chain saf
 | **Contract Deployment** | `0xefd338bad3691cc653cd02e6072cbfaf4fe8ac0e2ea1534409942c10ce888d00` | **FINALIZED** | Genesis vault creation ($10,000 AUM, $1.0000 NAV) |
 | **Deposit & Token Mint** | `0xa2fcbf392c2aeb5d3b82310ff5ee012d2805cc8344395a9418ec15cd404972ba` | **FINALIZED** | Alice deposited $500 USDC &rarr; Minted 500 ATK tokens |
 | **Token Transfer** | `0x75c1ba7562083aeed4fc3a031091e0dfe3967a4cfca506fee4bbb5a463aba8db` | **FINALIZED** | Alice transferred 50 ATK tokens to Bob on-chain |
-| **AI Rebalance Mandate** | `0x4e7c4eca0014db288d746ed2f05bd0f6cc9dff51a24ee29ffec835745e11d3be` | **FINALIZED** | Validators reached Web consensus on Arc Mainnet mandate |
+| **AI Rebalance Mandate** | `0x4e7c4eca0014db288d746ed2f05bd0f6cc9dff51a24ee29ffec835745e11d3be` | **FINALIZED** | Validators reached Web consensus on portfolio rebalance mandate |
 | **Investor Deposit** | `0xba473f6e7ccb090409efdfe8b17c422db865a5de44b52b6b802d90a90f024183` | **FINALIZED** | Investor deposited 200 USDC &rarr; Minted 199 ATK tokens |
 | **Share Redemption** | `0x1a3d1c9f2d5d3496f85ecd1c80efed7e338ac649796a6ec5169c4d144eda7031` | **FINALIZED** | Investor redeemed 100 ATK shares for $100.50 USDC cash |
 
@@ -225,7 +223,7 @@ python test/test_alphatank_brain.py
 **Test Results (100% Passing):**
 - `[OK] 1. Genesis Vault Initialized: $10,000 AUM at $1.0000 NAV`
 - `[OK] 2. User Deposit Verified: Alice deposited $1,000 USDC -> Minted 1,000 ATK Shares`
-- `[OK] 3. Bullish AI Rebalance Verified: Target Arc Mainnet | NAV rose to $1.0600 (+600 bps)`
+- `[OK] 3. Bullish AI Rebalance Verified: Target Base Mainnet | NAV rose to $1.0600 (+600 bps)`
 - `[OK] 4. Code-is-Law Risk Guardrail Verified: Blocked 45% BTC concentration attempt ([ERR_CAP_01])`
 - `[OK] 5. Liquidity Safety Invariant Verified: Blocked 5% cash buffer drop attempt ([ERR_LIQUIDITY_02])`
 - `[OK] 6. Mathematical Integrity Verified: Blocked non-100% weight allocation ([ERR_WEIGHT_01])`
@@ -253,7 +251,7 @@ AlphaTank/
 ├── test/
 │   └── test_alphatank_brain.py  # 9-factor invariant regression test suite
 ├── relay/
-│   └── AlphaTankRelay.py        # Cross-chain settlement relay (Base + Arc)
+│   └── AlphaTankRelay.py        # Cross-chain settlement relay (Base Mainnet & Base Sepolia)
 ├── deploy_base_sepolia.py       # Automated Base Sepolia deployment script
 ├── deployment.json              # Live GenLayer Studio deployment receipt
 ├── SUBMISSION_NOTES.md          # Agent Tank portal submission notes (< 1,000 chars)

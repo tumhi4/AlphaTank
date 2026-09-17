@@ -7,7 +7,7 @@ investment committee, multi-asset synthetic vault, and ERC-20 share token.
 
 It synthesizes live market prices, crypto momentum, and macro news sentiment
 through GenLayer Equivalence Principle consensus to dynamically rebalance
-a risk-controlled portfolio across Circle Arc Mainnet and Coinbase Base,
+a risk-controlled portfolio across Coinbase Base Mainnet and Base Sepolia,
 enforcing strict on-chain risk guardrails and ERC-4626 style NAV accounting.
 
 Key Invariants:

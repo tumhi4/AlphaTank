@@ -5,6 +5,6 @@
 // 2. Asset Concentration Cap: Max 35% single asset (BTC/ETH/SOL).
 // 3. Liquidity Safeguard: Min 15% USDC cash buffer.
 // 4. Circuit Breaker: Sentiment < 25 triggers 100% emergency USDC cash rotation.
-// 5. Multi-Chain Settlement: Relays cryptographic mandates to Circle Arc Mainnet (USDC-native gas) & Base Sepolia.
+// 5. Multi-Chain Settlement: Relays cryptographic mandates to Coinbase Base Mainnet (Chain ID 8453) & Base Sepolia.
 // CONTRACT: 0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C
 // EXPLORER: https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C
