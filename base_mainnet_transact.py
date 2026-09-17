@@ -53,6 +53,17 @@ def get_telemetry(user_address=None):
             sol_w = vault.functions.solWeightBps().call()
             cash_w = vault.functions.cashWeightBps().call()
 
+            usdc_contract = w3.eth.contract(
+                address=Web3.to_checksum_address("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"),
+                abi=[{"constant": True, "inputs": [{"name": "account", "type": "address"}], "name": "balanceOf", "outputs": [{"name": "", "type": "uint256"}], "type": "function"}]
+            )
+            usdc_raw = 0
+            try:
+                usdc_raw = usdc_contract.functions.balanceOf(vault_address).call()
+            except Exception:
+                pass
+            usdc_bal = float(usdc_raw) / 1e6
+
             user_shares = 0
             if user_address:
                 try:
@@ -61,9 +72,11 @@ def get_telemetry(user_address=None):
                 except Exception:
                     pass
 
-            aum_dollars = round(eth_bal * 2500.0, 2)
+            aum_dollars = round(usdc_bal + (eth_bal * 2500.0), 2)
             if aum_dollars == 0 and total_shares > 0:
                 aum_dollars = round((total_shares * (nav_bps / 10000.0)) / 1e6, 2)
+            if aum_dollars == 0 and total_aum > 0:
+                aum_dollars = round(total_aum / 1e6, 2)
 
             result = {
                 "network": "base_mainnet",
@@ -71,6 +84,8 @@ def get_telemetry(user_address=None):
                 "chainId": CHAIN_ID,
                 "vaultAddress": vault_address,
                 "basescan": f"https://basescan.org/address/{vault_address}",
+                "usdcBalance": usdc_bal,
+                "usdcBalanceFormatted": f"${usdc_bal:,.2f} USDC",
                 "ethBalance": eth_bal,
                 "ethBalanceFormatted": f"{eth_bal:.6f} ETH",
                 "totalShares": total_shares,
@@ -223,6 +238,51 @@ def rebalance(scenario="BULL"):
     }
     print(json.dumps(result))
 
+def withdraw(shares=1.0):
+    if not DEPLOYER_KEY:
+        print(json.dumps({"success": False, "error": "BASE_MAINNET_KEY not set in .env"}))
+        return
+
+    w3 = get_w3()
+    acct = w3.eth.account.from_key(DEPLOYER_KEY)
+    vault_address = Web3.to_checksum_address(get_vault_info())
+
+    with open("contracts/AlphaTankVault.json") as f:
+        abi = json.load(f)["abi"]
+    vault = w3.eth.contract(address=vault_address, abi=abi)
+
+    shares_units = int(float(shares) * 1e6)
+    latest_block = w3.eth.get_block('latest')
+    base_fee = latest_block.get('baseFeePerGas', w3.to_wei('0.005', 'gwei'))
+    priority_fee = max(w3.eth.max_priority_fee, w3.to_wei('0.001', 'gwei'))
+    max_fee = int(base_fee * 2.0) + priority_fee
+
+    nonce = w3.eth.get_transaction_count(acct.address)
+    tx = vault.functions.withdraw(shares_units).build_transaction({
+        'from': acct.address,
+        'nonce': nonce,
+        'gas': 150000,
+        'maxFeePerGas': max_fee,
+        'maxPriorityFeePerGas': priority_fee,
+        'chainId': CHAIN_ID
+    })
+    signed = acct.sign_transaction(tx)
+    tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
+    tx_hex = tx_hash.hex()
+    if not tx_hex.startswith("0x"):
+        tx_hex = "0x" + tx_hex
+    receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=60)
+
+    result = {
+        "success": bool(receipt.status == 1),
+        "action": "BASE_MAINNET_WITHDRAW_USDC",
+        "shares": shares,
+        "txHash": tx_hex,
+        "vaultAddress": vault_address,
+        "basescan": f"https://basescan.org/tx/{tx_hex}"
+    }
+    print(json.dumps(result))
+
 if __name__ == "__main__":
     action = sys.argv[1] if len(sys.argv) > 1 else "telemetry"
     if action == "telemetry":
@@ -231,6 +291,9 @@ if __name__ == "__main__":
     elif action == "deposit":
         amt = float(sys.argv[2]) if len(sys.argv) > 2 else 0.00005
         deposit(amt)
+    elif action == "withdraw":
+        shrs = float(sys.argv[2]) if len(sys.argv) > 2 else 1.0
+        withdraw(shrs)
     elif action == "rebalance":
         scen = sys.argv[2] if len(sys.argv) > 2 else "BULL"
         rebalance(scen)

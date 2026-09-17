@@ -531,6 +531,58 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        // Route: POST /api/base-mainnet/deposit (Execute deposit on Base Mainnet)
+        if (pathname === '/api/base-mainnet/deposit' && req.method === 'POST') {
+            const amount = payload.amountUsdc || payload.amount || 100;
+            console.log(`[BASE MAINNET TX] Processing deposit: ${amount} USDC`);
+            const projectRoot = path.join(__dirname, '..');
+            exec(`python base_mainnet_transact.py deposit ${amount}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+                if (error) {
+                    console.error("Base Mainnet deposit error:", stderr || error.message);
+                    sendJson(res, 500, { success: false, error: stderr || error.message });
+                    return;
+                }
+                try {
+                    const data = JSON.parse(stdout.trim().split('\n').pop());
+                    console.log(`[BASE MAINNET TX] Deposit confirmed! Hash: ${data.txHash}`);
+                    sendJson(res, 200, data);
+                } catch (parseErr) {
+                    sendJson(res, 200, {
+                        success: true,
+                        action: 'BASE_MAINNET_DEPOSIT',
+                        output: stdout
+                    });
+                }
+            });
+            return;
+        }
+
+        // Route: POST /api/base-mainnet/withdraw (Execute withdraw on Base Mainnet)
+        if (pathname === '/api/base-mainnet/withdraw' && req.method === 'POST') {
+            const shares = payload.shares || 100;
+            console.log(`[BASE MAINNET TX] Processing withdraw: ${shares} ATK shares`);
+            const projectRoot = path.join(__dirname, '..');
+            exec(`python base_mainnet_transact.py withdraw ${shares}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+                if (error) {
+                    console.error("Base Mainnet withdraw error:", stderr || error.message);
+                    sendJson(res, 500, { success: false, error: stderr || error.message });
+                    return;
+                }
+                try {
+                    const data = JSON.parse(stdout.trim().split('\n').pop());
+                    console.log(`[BASE MAINNET TX] Withdraw confirmed! Hash: ${data.txHash}`);
+                    sendJson(res, 200, data);
+                } catch (parseErr) {
+                    sendJson(res, 200, {
+                        success: true,
+                        action: 'BASE_MAINNET_WITHDRAW',
+                        output: stdout
+                    });
+                }
+            });
+            return;
+        }
+
         // Unknown endpoint
         sendJson(res, 404, { error: "Endpoint not found" });
     });

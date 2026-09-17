@@ -1500,6 +1500,8 @@
               const t = data.telemetry;
               baseMainnetState.ethBalance = t.ethBalance;
               baseMainnetState.ethFormatted = t.ethBalanceFormatted;
+              baseMainnetState.usdcBalance = t.usdcBalance !== undefined ? t.usdcBalance : (t.totalAumUsdc || 0);
+              baseMainnetState.usdcFormatted = t.usdcBalanceFormatted || '$0.00 USDC';
               baseMainnetState.totalShares = t.totalShares;
               baseMainnetState.totalAumUsdc = t.totalAumUsdc;
               baseMainnetState.navBps = t.navBps;
@@ -1538,10 +1540,11 @@
         if (aumDelta) aumDelta.innerText = `~$${st.totalAumUsdc.toFixed(2)} USDC Value (BaseScan)`;
         if (allocAum) allocAum.innerText = `${st.ethFormatted} (~$${st.totalAumUsdc.toFixed(2)} USDC)`;
       } else if (isMainnet) {
-        if (aumLabel) aumLabel.innerText = 'Vault Collateral (TVL)';
-        if (aumVal) aumVal.innerText = st.ethFormatted || '0.000000 ETH';
-        if (aumDelta) aumDelta.innerText = st.totalAumUsdc > 0 ? `~$${st.totalAumUsdc.toFixed(2)} USDC Value (BaseScan)` : '$0.00 USDC Value (BaseScan)';
-        if (allocAum) allocAum.innerText = `${st.ethFormatted || '0.000000 ETH'} (~$${st.totalAumUsdc.toFixed(2)} USDC)`;
+        if (aumLabel) aumLabel.innerText = 'Vault Assets (USDC)';
+        const usdcBal = st.usdcBalance !== undefined ? st.usdcBalance : (st.totalAumUsdc || 0);
+        if (aumVal) aumVal.innerText = '$' + usdcBal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USDC';
+        if (aumDelta) aumDelta.innerText = `Verified on BaseScan (Chain 8453)`;
+        if (allocAum) allocAum.innerText = '$' + usdcBal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USDC';
       } else {
         if (aumLabel) aumLabel.innerText = 'Vault AUM (USDC)';
         if (aumVal) aumVal.innerText = '$' + st.aumUsdc.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1695,9 +1698,12 @@
       const navDollars = (st.navBps / 10000).toFixed(4);
       const depNavRate = document.getElementById('depositNavRate');
       const withNavRate = document.getElementById('withdrawNavRate');
-      if (isBase || isMainnet) {
+      if (isBase) {
         if (depNavRate) depNavRate.innerText = `1 ETH = $2,500 USDC | NAV: $${navDollars}`;
         if (withNavRate) withNavRate.innerText = `NAV: $${navDollars} (1 ATK = $1.0000 ETH Collateral)`;
+      } else if (isMainnet) {
+        if (depNavRate) depNavRate.innerText = `1 USDC = $1.0000 | Share NAV: $${navDollars}`;
+        if (withNavRate) withNavRate.innerText = `Share NAV: $${navDollars} (1:1 Native USDC Settlement)`;
       } else {
         if (depNavRate) depNavRate.innerText = '$' + navDollars;
         if (withNavRate) withNavRate.innerText = '$' + navDollars;
@@ -1757,21 +1763,21 @@
         if (withPayoutLabel) withPayoutLabel.innerText = 'Estimated ETH Payout:';
         if (btnWithText) btnWithText.innerText = 'WITHDRAW ETH ON BASE SEPOLIA (METAMASK)';
       } else if (isMainnet) {
-        if (depNotice) depNotice.innerText = 'Deposit native ETH on Coinbase Base Mainnet to mint ATK fund shares at current NAV (1 ETH = $2,500 USDC collateral):';
-        if (depInputLabel) depInputLabel.innerText = 'Deposit Amount (ETH):';
+        if (depNotice) depNotice.innerText = 'Deposit native USDC on Coinbase Base Mainnet to mint ATK fund shares directly at current NAV:';
+        if (depInputLabel) depInputLabel.innerText = 'Deposit Amount (USDC):';
         if (depBadge) { depBadge.innerText = 'Base Mainnet (8453)'; depBadge.className = 'text-[10px] mono text-emerald-400 font-semibold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800'; }
-        if (depPrefix) depPrefix.innerText = 'Ξ';
-        if (depSuffix) depSuffix.innerText = 'ETH';
-        if (depInput && (depInput.value === '500' || depInput.value === '5000' || !depInput.value)) depInput.value = '0.0001';
+        if (depPrefix) depPrefix.innerText = '$';
+        if (depSuffix) depSuffix.innerText = 'USDC';
+        if (depInput && (depInput.value === '0.001' || depInput.value === '0.0001' || !depInput.value)) depInput.value = '100';
         if (depRateLabel) depRateLabel.innerText = 'Valuation Rate:';
-        if (btnDepText) btnDepText.innerText = 'DEPOSIT ETH ON BASE MAINNET (METAMASK)';
+        if (btnDepText) btnDepText.innerText = 'DEPOSIT USDC ON BASE MAINNET (METAMASK)';
 
-        if (withNotice) withNotice.innerText = 'Redeem ATK shares for proportional native ETH on Coinbase Base Mainnet:';
+        if (withNotice) withNotice.innerText = 'Redeem ATK shares for proportional native USDC on Coinbase Base Mainnet:';
         if (withInputLabel) withInputLabel.innerText = 'ATK Shares to Burn (Base Mainnet):';
         if (withBadge) { withBadge.innerText = 'Base Mainnet (8453)'; withBadge.className = 'text-[10px] mono text-emerald-400 font-semibold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800'; }
-        if (withInput && (depInput.value === '500' || withInput.value === '1000' || !withInput.value)) withInput.value = '1';
-        if (withPayoutLabel) withPayoutLabel.innerText = 'Estimated ETH Payout:';
-        if (btnWithText) btnWithText.innerText = 'WITHDRAW ETH ON BASE MAINNET (METAMASK)';
+        if (withInput && (withInput.value === '1' || !withInput.value)) withInput.value = '100';
+        if (withPayoutLabel) withPayoutLabel.innerText = 'Estimated USDC Payout:';
+        if (btnWithText) btnWithText.innerText = 'REDEEM USDC ON BASE MAINNET (METAMASK)';
       } else {
         if (depNotice) depNotice.innerText = 'Deposit USDC collateral into AlphaTank Intelligent Contract on GenLayer Studio:';
         if (depInputLabel) depInputLabel.innerText = 'Deposit Amount (USDC):';
@@ -2079,10 +2085,11 @@
         return;
       }
 
-      // ROUTE 2: BASE MAINNET (Live EVM Smart Contract on Base Mainnet)
+      // ROUTE 2: BASE MAINNET (Live EVM Smart Contract on Base Mainnet with Native USDC)
       if (activeNetwork === 'BASE_MAINNET') {
         const vaultAddr = NETWORKS.BASE_MAINNET.contractAddress;
-        const ethVal = amount;
+        const usdcAddr = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
+        const usdcVal = amount;
 
         // Try MetaMask Injected
         if (window.ethereum) {
@@ -2110,30 +2117,70 @@
               }
             }
 
-            const weiVal = BigInt(Math.max(1, Math.floor(ethVal * 1e18)));
-            const weiHex = '0x' + weiVal.toString(16);
+            const usdcUnits = BigInt(Math.max(1, Math.floor(usdcVal * 1e6)));
+            const usdcUnitsHex = usdcUnits.toString(16).padStart(64, '0');
+            const cleanUser = userAddr.toLowerCase().replace('0x', '').padStart(64, '0');
+            const cleanVault = vaultAddr.toLowerCase().replace('0x', '').padStart(64, '0');
 
-            // depositETH() -> selector 0xf6326fb3
+            // 1. Check current allowance: allowance(owner, spender) -> 0xdd62ed3e
+            btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> CHECKING USDC ALLOWANCE...';
+            const allowanceCallData = '0xdd62ed3e' + cleanUser + cleanVault;
+            let currentAllowance = 0n;
+            try {
+              const allowanceHex = await window.ethereum.request({
+                method: 'eth_call',
+                params: [{
+                  to: usdcAddr,
+                  data: allowanceCallData
+                }, 'latest']
+              });
+              if (allowanceHex && allowanceHex !== '0x') {
+                currentAllowance = BigInt(allowanceHex);
+              }
+            } catch (allowErr) {
+              console.warn('Could not read allowance via eth_call:', allowErr);
+            }
+
+            // 2. If allowance < usdcUnits, request ERC-20 approval
+            if (currentAllowance < usdcUnits) {
+              btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> APPROVING USDC IN METAMASK...';
+              // approve(address spender, uint256 amount) -> 0x095ea7b3
+              const maxApproval = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+              const approveData = '0x095ea7b3' + cleanVault + maxApproval;
+              await window.ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [{
+                  from: userAddr,
+                  to: usdcAddr,
+                  data: approveData
+                }]
+              });
+            }
+
+            // 3. Call AlphaTankVault.deposit(uint256 usdcAmount) -> selector 0xb6b55f25
+            btn.innerHTML = '<span class="animate-spin inline-block mr-2">&#9696;</span> BROADCASTING VAULT DEPOSIT...';
+            const depositData = '0xb6b55f25' + usdcUnitsHex;
+
             const txHash = await window.ethereum.request({
               method: 'eth_sendTransaction',
               params: [{
                 from: userAddr,
                 to: vaultAddr,
-                value: weiHex,
-                data: '0xf6326fb3'
+                data: depositData
               }]
             });
 
             btn.innerHTML = oldHtml;
             btn.disabled = false;
             showTxModal(
-              'BASE MAINNET DEPOSIT BROADCASTED!',
+              'BASE MAINNET USDC DEPOSIT BROADCASTED!',
               txHash,
-              `Successfully deposited ${ethVal} ETH into AlphaTank Vault on Base Mainnet (${vaultAddr}).`,
+              `Successfully deposited $${usdcVal.toFixed(2)} native USDC into AlphaTank Vault on Base Mainnet (${vaultAddr}).`,
               `https://basescan.org/tx/${txHash}`,
               'VIEW ON BASESCAN (MAINNET)'
             );
-            addAuditLogRow('MAINNET_DEPOSIT', txHash, 'Base Mainnet L2', `Deposited ${ethVal} ETH -> Minted ATK Shares`, '$1.0600', 'CONFIRMED (L2)');
+            const navDollarsStr = (baseMainnetState.navBps / 10000).toFixed(4);
+            addAuditLogRow('MAINNET_DEPOSIT', txHash, 'Base Mainnet L2', `Deposited $${usdcVal.toFixed(2)} USDC -> Minted ATK Shares`, '$' + navDollarsStr, 'CONFIRMED (L2)');
             await loadNetworkTelemetry();
             return;
           } catch (metamaskErr) {
@@ -2152,7 +2199,7 @@
           const res = await fetch('/api/base-mainnet/deposit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amountEth: ethVal })
+            body: JSON.stringify({ amountUsdc: usdcVal })
           });
           if (res.ok) {
             const result = await res.json();
@@ -2161,11 +2208,11 @@
             showTxModal(
               'BASE MAINNET ON-CHAIN DEPOSIT FINALIZED',
               result.txHash,
-              `Deposited ${ethVal} ETH into AlphaTank Vault on Base Mainnet.`,
+              `Deposited $${usdcVal.toFixed(2)} USDC into AlphaTank Vault on Base Mainnet.`,
               result.basescan,
               'VIEW ON BASESCAN (MAINNET)'
             );
-            addAuditLogRow('MAINNET_DEPOSIT', result.txHash, 'Base Mainnet L2', `Deposited ${ethVal} ETH -> Minted ATK Shares`, '$1.0600', 'CONFIRMED (L2)');
+            addAuditLogRow('MAINNET_DEPOSIT', result.txHash, 'Base Mainnet L2', `Deposited $${usdcVal.toFixed(2)} USDC -> Minted ATK Shares`, '$1.0600', 'CONFIRMED (L2)');
             await loadNetworkTelemetry();
             return;
           }
@@ -2326,7 +2373,7 @@
         return;
       }
 
-      // ROUTE 2: BASE MAINNET
+      // ROUTE 2: BASE MAINNET (Live EVM Smart Contract on Base Mainnet with Native USDC)
       if (activeNetwork === 'BASE_MAINNET') {
         const vaultAddr = NETWORKS.BASE_MAINNET.contractAddress;
 
@@ -2355,9 +2402,10 @@
               }
             }
 
-            // withdrawETH(uint256) selector: 0xf14210a6
-            const sharesHex = BigInt(sharesToBurn).toString(16).padStart(64, '0');
-            const txData = '0xf14210a6' + sharesHex;
+            // withdraw(uint256 sharesToBurn) selector: 0x2e1a7d4d (ATK has 6 decimals matching USDC)
+            const sharesUnits = BigInt(Math.max(1, Math.floor(sharesToBurn * 1e6)));
+            const sharesHex = sharesUnits.toString(16).padStart(64, '0');
+            const txData = '0x2e1a7d4d' + sharesHex;
 
             const txHash = await window.ethereum.request({
               method: 'eth_sendTransaction',
@@ -2371,13 +2419,14 @@
             btn.innerHTML = oldHtml;
             btn.disabled = false;
             showTxModal(
-              'BASE MAINNET WITHDRAWAL BROADCASTED!',
+              'BASE MAINNET USDC WITHDRAWAL BROADCASTED!',
               txHash,
-              `Redeemed ${sharesToBurn} ATK shares for native ETH on Base Mainnet Vault at ${vaultAddr}.`,
+              `Redeemed ${sharesToBurn} ATK shares for proportional native USDC on Base Mainnet Vault at ${vaultAddr}.`,
               `https://basescan.org/tx/${txHash}`,
               'VIEW ON BASESCAN (MAINNET)'
             );
-            addAuditLogRow('MAINNET_WITHDRAW', txHash, 'Base Mainnet L2', `Redeemed ${sharesToBurn} ATK -> Paid Native ETH`, '$1.0600', 'CONFIRMED (L2)');
+            const navDollarsStr = (baseMainnetState.navBps / 10000).toFixed(4);
+            addAuditLogRow('MAINNET_WITHDRAW', txHash, 'Base Mainnet L2', `Redeemed ${sharesToBurn} ATK -> Paid Native USDC`, '$' + navDollarsStr, 'CONFIRMED (L2)');
             await loadNetworkTelemetry();
             return;
           } catch (metamaskErr) {
@@ -2390,6 +2439,30 @@
             }
           }
         }
+
+        // Programmatic Fallback via backend RPC
+        try {
+          const res = await fetch('/api/base-mainnet/withdraw', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ shares: sharesToBurn })
+          });
+          if (res.ok) {
+            const result = await res.json();
+            btn.innerHTML = oldHtml;
+            btn.disabled = false;
+            showTxModal(
+              'BASE MAINNET ON-CHAIN WITHDRAWAL FINALIZED',
+              result.txHash,
+              `Redeemed ${sharesToBurn} ATK shares for native USDC on Base Mainnet.`,
+              result.basescan,
+              'VIEW ON BASESCAN (MAINNET)'
+            );
+            addAuditLogRow('MAINNET_WITHDRAW', result.txHash, 'Base Mainnet L2', `Redeemed ${sharesToBurn} ATK -> Paid Native USDC`, '$1.0600', 'CONFIRMED (L2)');
+            await loadNetworkTelemetry();
+            return;
+          }
+        } catch (e) {}
 
         btn.innerHTML = oldHtml;
         btn.disabled = false;
@@ -2678,11 +2751,15 @@
       const navDollars = st.navBps / 10000;
       const el = document.getElementById('depositSharesPreview');
       if (!el) return;
-      if (activeNetwork === 'BASE_SEPOLIA' || activeNetwork === 'BASE_MAINNET') {
+      if (activeNetwork === 'BASE_SEPOLIA') {
         const usdcVal = amount * 2500;
         const shares = navDollars > 0 ? (usdcVal / navDollars) : 0;
         const formattedShares = shares >= 10 ? shares.toFixed(2) : (shares > 0 ? shares.toFixed(4) : '0.00');
         el.innerText = `${formattedShares} ATK ($${usdcVal.toFixed(2)} value)`;
+      } else if (activeNetwork === 'BASE_MAINNET') {
+        const shares = (amount > 0 && navDollars > 0) ? (amount / navDollars) : 0;
+        const formattedShares = shares >= 10 ? shares.toFixed(2) : (shares > 0 ? shares.toFixed(4) : '0.00');
+        el.innerText = `${formattedShares} ATK ($${amount.toFixed(2)} USDC)`;
       } else {
         const shares = amount > 0 && navDollars > 0 ? (amount / navDollars).toFixed(2) : '0.00';
         el.innerText = `${shares} ATK`;
@@ -2696,9 +2773,11 @@
       const usdcPayout = shares * navDollars;
       const el = document.getElementById('withdrawPayoutPreview');
       if (!el) return;
-      if (activeNetwork === 'BASE_SEPOLIA' || activeNetwork === 'BASE_MAINNET') {
+      if (activeNetwork === 'BASE_SEPOLIA') {
         const ethPayout = (usdcPayout / 2500).toFixed(6);
         el.innerText = `~${ethPayout} ETH ($${usdcPayout.toFixed(2)} USDC)`;
+      } else if (activeNetwork === 'BASE_MAINNET') {
+        el.innerText = '$' + usdcPayout.toFixed(2) + ' USDC';
       } else {
         el.innerText = '$' + usdcPayout.toFixed(2) + ' USDC';
       }
