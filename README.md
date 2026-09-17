@@ -2,8 +2,8 @@
 ### Autonomous Multi-Chain AI Hedge Fund Vault on GenLayer
 
 [![GenLayer Studio](https://img.shields.io/badge/GenLayer-Studio_Testnet-6C5CE7)](https://studio.genlayer.com)
-[![Deployed Address](https://img.shields.io/badge/Contract-0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C-00D2D3)](https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C)
-[![Settlement](https://img.shields.io/badge/Settlement-Base_Sepolia_%7C_Base_Mainnet-0984E3)](https://basescan.org)
+[![GenLayer Contract](https://img.shields.io/badge/GenLayer_Brain-0x2583...8cb8C-00D2D3)](https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C)
+[![Base Sepolia Vault](https://img.shields.io/badge/Base_Vault-0xc6dE...09197-0984E3)](https://sepolia.basescan.org/address/0xc6dE87978cB91F387784a079B2188C9ebD309197)
 [![Author](https://img.shields.io/badge/Author-tumhi4-10B981)](https://github.com/tumhi4)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -91,16 +91,14 @@ AlphaTank guarantees investor capital protection through immutable, on-chain saf
 
 ---
 
-## 🚀 Live Deployment on GenLayer Studio
+## 🚀 Live Deployments & On-Chain Verification
 
+### 1. GenLayer Studio (Autonomous AI CIO & Invariant Engine)
 - **Contract Address:** [`0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C`](https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C)
-- **Explorer URL:** [https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C](https://explorer-studio.genlayer.com/address/0x2583404dAf8c26a1D825F2F6812f9AA1e508cb8C)
 - **Deployment Tx Hash:** `0xefd338bad3691cc653cd02e6072cbfaf4fe8ac0e2ea1534409942c10ce888d00`
 - **Network:** GenLayer Studio Testnet (`https://studio.genlayer.com/api`)
 
-### Verified On-Chain Transaction Evidence (Status: FINALIZED)
-The contract has a rich history of live transactions mined by GenLayer Studio consensus:
-
+#### Verified GenLayer On-Chain History (Status: FINALIZED)
 | Action | Transaction Hash | Validator Status | Result & Description |
 | :--- | :--- | :--- | :--- |
 | **Contract Deployment** | `0xefd338bad3691cc653cd02e6072cbfaf4fe8ac0e2ea1534409942c10ce888d00` | **FINALIZED** | Genesis vault creation ($10,000 AUM, $1.0000 NAV) |
@@ -109,6 +107,79 @@ The contract has a rich history of live transactions mined by GenLayer Studio co
 | **AI Rebalance Mandate** | `0x4e7c4eca0014db288d746ed2f05bd0f6cc9dff51a24ee29ffec835745e11d3be` | **FINALIZED** | Validators reached Web consensus on Arc Mainnet mandate |
 | **Investor Deposit** | `0xba473f6e7ccb090409efdfe8b17c422db865a5de44b52b6b802d90a90f024183` | **FINALIZED** | Investor deposited 200 USDC &rarr; Minted 199 ATK tokens |
 | **Share Redemption** | `0x1a3d1c9f2d5d3496f85ecd1c80efed7e338ac649796a6ec5169c4d144eda7031` | **FINALIZED** | Investor redeemed 100 ATK shares for $100.50 USDC cash |
+
+---
+
+### 2. Coinbase Base Sepolia (Universal EVM Settlement Vault)
+- **Contract Address:** [`0xc6dE87978cB91F387784a079B2188C9ebD309197`](https://sepolia.basescan.org/address/0xc6dE87978cB91F387784a079B2188C9ebD309197)
+- **Explorer:** [BaseScan Sepolia](https://sepolia.basescan.org/address/0xc6dE87978cB91F387784a079B2188C9ebD309197)
+- **Chain ID:** `84532` | **Standard:** ERC-20 / ERC-4626 Compatible Vault (`ATK` Shares)
+
+#### Verified BaseScan On-Chain Transactions (Mined on L2)
+| Action | BaseScan Tx Hash | Block | Status | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **Vault Deployment** | [`0x52ca2e646f...`](https://sepolia.basescan.org/tx/0x52ca2e646fa01c3d11b6d087c53d9e4a3aa5bc5a420b92dbb3fa5c9bfae7e65e) | `46914561` | **Success** | Deployed `AlphaTankVault.sol` with owner `0xaF3338...` |
+| **Collateral Deposit** | [`0x0f2257321e...`](https://sepolia.basescan.org/tx/0x0f2257321ebf5817a3a30a7d903f0b2f3a61f2fbb15ee61623512aeb7a00f28a) | `46914717` | **Success** | Deposited native collateral; minted 250,000 ATK shares |
+| **Collateral Redemption** | [`0xaefce70498...`](https://sepolia.basescan.org/tx/0xaefce70498118047ce5e82b7ca7f3630f9ff4330ba09ef784e60155b9a4c071d) | `46914766` | **Success** | Burned 1 ATK share; refunded native ETH payout |
+| **AI Mandate Execution** | [`0xd2089cfc4e...`](https://sepolia.basescan.org/tx/0xd2089cfc4e75d470d329af3bc679fa46cbd41cbe4e060bb0c823f0d88244c7c6) | `46919300` | **Success** | `executeRebalanceMandate`: verified consensus weights & emitted `MandateExecuted` |
+
+---
+
+## 💎 Base Mainnet Production Architecture & Execution Roadmap
+
+### 1. Curated Base-Native EVM Asset Universe (Deep Liquidity)
+To eliminate cross-chain bridge vulnerability, wrapped asset slippage, and non-canonical token risk, **AlphaTank on Base Mainnet restricts its portfolio to high-liquidity, native Base EVM tokens**:
+
+| Asset | Mainnet Token | Contract Address | Institutional Role & Liquidity |
+| :--- | :--- | :--- | :--- |
+| **Bitcoin** | **cbBTC** | `0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf` | Coinbase's native wrapped Bitcoin on Base. $1B+ backed liquidity on Aerodrome & Uniswap V3. |
+| **Ethereum** | **WETH** | `0x4200000000000000000000000000000000000006` | Canonical Base wrapped Ether. Deepest order book on the entire chain. |
+| **DeFi Beta** | **AERO** | `0x940181a94A35A4569E4529A3CDfB74e48FD986ca` | Flagship DEX governance & fee-earning token on Base. |
+| **Cash Buffer** | **USDC** | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` | Native Circle USDC. Safe liquidity reserve and settlement asset. |
+
+> **Architectural Decision (Solana / Non-EVM Omission):** While bridged Solana (Wormhole SOL) exists on Base, it suffers from thinner liquidity pools, higher swap slippage, and external bridge exposure. Restricting the portfolio to **cbBTC, WETH, AERO, and USDC** maximizes capital efficiency and guarantees instant, sub-cent swap execution without bridge risk.
+
+---
+
+### 2. Multi-Asset Redemptions: The 2-Tier Liquidity Cascade
+When an investor deposits USDC, their capital is distributed across the multi-asset basket. When redeeming shares, retail and institutional investors require clean single-currency settlement (USDC) rather than receiving micro-allocations of multiple tokens.
+
+AlphaTank implements the **2-Tier Liquidity Cascade** (the proven architecture of Yearn Finance and Balancer):
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Investor as Investor (Alice)
+    participant Vault as AlphaTankVault.sol
+    participant DEX as Aerodrome / Uniswap V3 Pool
+
+    Investor->>Vault: withdraw(sharesToBurn)
+    alt Payout <= 15% Free USDC Cash Reserve (90% of redemptions)
+        Vault-->>Investor: Transfers USDC directly from liquid cash reserve
+        Note over Vault,Investor: 0 DEX Swaps | 0 Slippage | Instant Settlement | Gas < $0.01
+    else Payout > Free USDC Cash Reserve (Large / Whale Redemptions)
+        Vault->>Vault: Exhausts available USDC cash buffer
+        Vault->>DEX: Auto-liquidates exact pro-rata slice: cbBTC & WETH -> USDC
+        DEX-->>Vault: Receives USDC at Chainlink oracle price bounds
+        Vault-->>Investor: Delivers 100% redemption in clean USDC
+        Note over Vault,Investor: Preserves exact portfolio target weights for remaining investors!
+    end
+```
+
+#### Tier 1: Instant Cash Buffer Redemptions (Zero-Slippage Path)
+- **Invariant Guarantee:** The vault permanently maintains $\ge 15\%$ (1,500 bps) in free USDC cash.
+- Standard withdrawals are serviced directly from this cash buffer without interacting with DEX pools.
+- **Benefits:** Zero DEX slippage, zero trade fees, and instantaneous execution. GenLayer's subsequent rebalancing cycle automatically replenishes the cash buffer to the 15% floor.
+
+#### Tier 2: Pro-Rata Auto-Liquidation (Whale Protection)
+- For redemptions exceeding the available cash buffer, `AlphaTankVault` automatically liquidates a proportional fraction of `cbBTC`, `WETH`, and `AERO` back into `USDC` via Aerodrome or Uniswap V3.
+- Formula:
+  $$\text{Asset Sold} = \text{Vault Asset Balance} \times \frac{\text{Shares Burned}}{\text{Total Shares Outstanding}}$$
+- **Invariant Protection:** Pro-rata selling ensures that remaining shareholders experience zero portfolio skew or unintended asset concentration.
+- **MEV & Slippage Safeguard:** Swaps enforce an on-chain slippage cap derived from **Chainlink Price Feeds** on Base (`BTC/USD`, `ETH/USD`), preventing frontrunning and sandwich attacks.
+
+#### Optional Tier 3: In-Kind Basket Redemptions (Institutional Whales)
+- For large institutional allocations (\$100,000+), investors can optionally invoke `withdrawInKind(shares)`, receiving their precise underlying slice of `cbBTC`, `WETH`, and `USDC` directly to their wallet with zero DEX fees.
 
 ---
 
