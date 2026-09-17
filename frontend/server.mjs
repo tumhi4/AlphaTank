@@ -419,6 +419,46 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        // Route: POST /api/base/rebalance (Execute real executeRebalanceMandate on Base Sepolia)
+        if (pathname === '/api/base/rebalance' && req.method === 'POST') {
+            const scenario = payload.scenario || "BULL";
+            console.log(`[BASE SEPOLIA TX] Executing rebalance mandate: ${scenario}`);
+            const projectRoot = path.join(__dirname, '..');
+            exec(`python base_transact.py rebalance ${scenario}`, { cwd: projectRoot }, (error, stdout, stderr) => {
+                if (error) {
+                    console.error("Base rebalance error:", stderr || error.message);
+                    sendJson(res, 500, { success: false, error: stderr || error.message });
+                    return;
+                }
+                try {
+                    const data = JSON.parse(stdout.trim().split('\n').pop());
+                    console.log(`[BASE SEPOLIA TX] Rebalance confirmed on BaseScan! Hash: ${data.txHash}`);
+                    sendJson(res, 200, {
+                        success: true,
+                        action: 'BASE_REBALANCE',
+                        txHash: data.txHash,
+                        basescan: data.basescan,
+                        blockNumber: data.blockNumber,
+                        mandateHash: data.mandateHash,
+                        scenario: data.scenario,
+                        regime: data.regime,
+                        rationale: data.rationale,
+                        weights: data.weights,
+                        navBps: data.navBps,
+                        navDollars: data.navDollars,
+                        telemetry: data
+                    });
+                } catch (parseErr) {
+                    sendJson(res, 200, {
+                        success: true,
+                        action: 'BASE_REBALANCE',
+                        output: stdout
+                    });
+                }
+            });
+            return;
+        }
+
         // Unknown endpoint
         sendJson(res, 404, { error: "Endpoint not found" });
     });

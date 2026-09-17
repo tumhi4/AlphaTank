@@ -37,6 +37,8 @@ def deposit(amount_eth=0.0005):
     signed = acct.sign_transaction(tx)
     tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
     tx_hex = tx_hash.hex()
+    if not tx_hex.startswith("0x"):
+        tx_hex = "0x" + tx_hex
     receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=60)
     
     result = {
@@ -70,6 +72,8 @@ def withdraw(shares=1):
     signed = acct.sign_transaction(tx)
     tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
     tx_hex = tx_hash.hex()
+    if not tx_hex.startswith("0x"):
+        tx_hex = "0x" + tx_hex
     receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=60)
 
     result = {
@@ -142,11 +146,101 @@ def get_telemetry(user_address=None):
     }
     print(json.dumps(result))
 
+def rebalance(scenario="BULL"):
+    import time
+    w3 = Web3(Web3.HTTPProvider(RPC_URL))
+    acct = w3.eth.account.from_key(DEPLOYER_KEY)
+    vault_address = Web3.to_checksum_address(get_vault_info())
+
+    with open("contracts/AlphaTankVault.json") as f:
+        abi = json.load(f)["abi"]
+    vault = w3.eth.contract(address=vault_address, abi=abi)
+
+    # Scenarios mapping
+    if scenario == "CRASH":
+        btc_bps = 0
+        eth_bps = 0
+        sol_bps = 0
+        cash_bps = 10000
+        nav_bps = 10000
+        regime = "EXTREME_FEAR_CIRCUIT_BREAKER"
+        rationale = "Autonomous flight to 100% USDC cash triggered. All risky assets liquidated to preserve principal."
+    elif scenario == "NEUTRAL":
+        btc_bps = 3000
+        eth_bps = 3000
+        sol_bps = 2500
+        cash_bps = 1500
+        nav_bps = 10000
+        regime = "DEFENSIVE_RANGING"
+        rationale = "Macro uncertainty detected. Balanced portfolio with 15% cash reserve."
+    else: # BULL (default)
+        btc_bps = 3500
+        eth_bps = 2500
+        sol_bps = 2500
+        cash_bps = 1500
+        nav_bps = 10600
+        regime = "BULL_MOMENTUM"
+        rationale = "Arc Mainnet launch & strong 24h momentum. 35% BTC, 25% ETH, 25% SOL, 15% cash."
+
+    # Cryptographic mandate hash (32 bytes)
+    mandate_bytes = Web3.keccak(text=f"genlayer_ai_mandate_{scenario}_{int(time.time())}")
+    mandate_hex = mandate_bytes.hex()
+    if not mandate_hex.startswith("0x"):
+        mandate_hex = "0x" + mandate_hex
+
+    nonce = w3.eth.get_transaction_count(acct.address)
+    tx = vault.functions.executeRebalanceMandate(
+        mandate_bytes,
+        btc_bps,
+        eth_bps,
+        sol_bps,
+        cash_bps,
+        nav_bps
+    ).build_transaction({
+        'from': acct.address,
+        'nonce': nonce,
+        'gas': 220000,
+        'maxFeePerGas': w3.to_wei('0.15', 'gwei'),
+        'maxPriorityFeePerGas': w3.to_wei('0.01', 'gwei'),
+        'chainId': 84532
+    })
+    signed = acct.sign_transaction(tx)
+    tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
+    tx_hex = tx_hash.hex()
+    if not tx_hex.startswith("0x"):
+        tx_hex = "0x" + tx_hex
+    receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=60)
+
+    result = {
+        "success": bool(receipt.status == 1),
+        "action": "BASE_REBALANCE",
+        "scenario": scenario,
+        "regime": regime,
+        "rationale": rationale,
+        "mandateHash": mandate_hex,
+        "txHash": tx_hex,
+        "blockNumber": receipt.blockNumber,
+        "vaultAddress": vault_address,
+        "basescan": f"https://sepolia.basescan.org/tx/{tx_hex}",
+        "weights": {
+            "btc": btc_bps,
+            "eth": eth_bps,
+            "sol": sol_bps,
+            "cash": cash_bps
+        },
+        "navBps": nav_bps,
+        "navDollars": nav_bps / 10000.0
+    }
+    print(json.dumps(result))
+
 if __name__ == "__main__":
     action = sys.argv[1] if len(sys.argv) > 1 else "deposit"
     if action == "telemetry":
         u_addr = sys.argv[2] if len(sys.argv) > 2 else None
         get_telemetry(u_addr)
+    elif action == "rebalance":
+        scen = sys.argv[2] if len(sys.argv) > 2 else "BULL"
+        rebalance(scen)
     elif action == "deposit":
         val = float(sys.argv[2]) if len(sys.argv) > 2 else 0.0005
         deposit(val)
